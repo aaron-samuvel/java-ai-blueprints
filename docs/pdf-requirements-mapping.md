@@ -14,7 +14,7 @@ Status: **done** = implemented and tested · **catalogue** = documentation only,
 |---|---|---|
 | J-AIDLC stage 1: domain/intent modelling with records | `part-1-lifecycle` `IncidentTriage`, `StructuredOutputExample` | done |
 | Stage 2: hermetic local prototyping with Dev Services | `shared/` stubs; `-Pit` profile; `docs/setup.md` | done (stubs), ITs partial |
-| Stage 3: context engineering & RAG ETL with TOON | `part-1-lifecycle/theory.md`; `blueprint-03-modular-rag` | theory done; code planned |
+| Stage 3: context engineering & RAG ETL with TOON | `blueprint-03-modular-rag` (`IngestionService`, `ToonEncoder`) | done |
 | Stage 4: dual-layer verification | stub-model tests; `pillar-eval-gates` | layer 1 done; layer 2 planned |
 | Stage 5: zero-trust guardrails with FinOps | `blueprint-05-…`; `pillar-finops-budget` | guardrails done; FinOps planned |
 | Stage 6: semantic observability with OpenInference | `part-1-lifecycle/theory.md` | theory only; planned |
@@ -47,7 +47,7 @@ Status: **done** = implemented and tested · **catalogue** = documentation only,
 |---|---|---|---|
 | 1 | GOAP/OODA FinOps incident agent (Embabel) | `blueprint-01-goap-finops-incident-agent` | planned |
 | 2 | LangGraph4j HITL multi-agent evaluation | `blueprint-02-langgraph4j-hitl-evaluation` | planned |
-| 3 | Modular, branching, conditional RAG (Docling, PGVector) | `blueprint-03-modular-rag` | planned |
+| 3 | Modular, branching, conditional RAG (Docling, PGVector) | `blueprint-03-modular-rag` | **done** (20 tests + 1 pgvector IT; Docling stubbed) |
 | 4 | Multi-agent transactional swarm, tenant-partitioned ChatMemory | `blueprint-04-transactional-swarm` | planned |
 | 5 | Zero-trust PII tokenisation advisor with @ToolPrivacyPolicy | `blueprint-05-pii-tokenization-advisor` | **done** (18 tests + 1 IT) |
 | 6 | MCP server mesh + model switchboard (OAuth2) | `blueprint-06-mcp-mesh-model-switchboard` | planned |
@@ -59,5 +59,5 @@ Status: **done** = implemented and tested · **catalogue** = documentation only,
 |---|---|---|
 | FinOps reserve-call-commit budget advisor | `pillar-finops-budget` | planned |
 | JUnit evaluation gates (RelevancyEvaluator, FactCheckingEvaluator) | `pillar-eval-gates` | planned |
-| TOON | `part-1-lifecycle/theory.md`, `version-notes.md`; code in blueprint-03 | theory done; savings unverified |
+| TOON | `blueprint-03-modular-rag` `toon/`, `ToonVsJsonTokenMeasurementTest` | done: measured 38–39% vs compact JSON on uniform tables, 16% on text chunks, −26 to −31% on nested data |
 | AGENTS.md constitution | `/AGENTS.md` | done (wording is author's design) |

@@ -7,7 +7,7 @@ multi-module project. It has a folder per topic, with theory, runnable examples,
 a project and tests. Every module builds and tests **without Docker, cloud accounts or a live LLM**:
 tests use deterministic stub models from [`shared/`](shared). Live Ollama tests are opt-in (`-Pit`).
 
-> **Status:** foundation milestone. Part I and Blueprint 05 are done; the rest are planned.
+> **Status:** foundation milestone. Part I, Blueprint 03 (modular RAG) and Blueprint 05 (PII advisor) are done; the rest are planned.
 > See [docs/project-progress.md](docs/project-progress.md).
 
 ## Stack
@@ -31,7 +31,7 @@ The reasons for these versions are in [docs/version-notes.md](docs/version-notes
 | [`part-2-github-gems/`](part-2-github-gems) | Part II: 10 open-source repos | catalogue |
 | [`blueprint-01-goap-finops-incident-agent/`](blueprint-01-goap-finops-incident-agent) | Blueprint 1 | planned |
 | [`blueprint-02-langgraph4j-hitl-evaluation/`](blueprint-02-langgraph4j-hitl-evaluation) | Blueprint 2 | planned |
-| [`blueprint-03-modular-rag/`](blueprint-03-modular-rag) | Blueprint 3 | planned |
+| [`blueprint-03-modular-rag/`](blueprint-03-modular-rag) | Blueprint 3 | **done** |
 | [`blueprint-04-transactional-swarm/`](blueprint-04-transactional-swarm) | Blueprint 4 | planned |
 | [`blueprint-05-pii-tokenization-advisor/`](blueprint-05-pii-tokenization-advisor) | Blueprint 5 | **done** |
 | [`blueprint-06-mcp-mesh-model-switchboard/`](blueprint-06-mcp-mesh-model-switchboard) | Blueprint 6 | planned |
@@ -53,6 +53,9 @@ The reasons for these versions are in [docs/version-notes.md](docs/version-notes
 mvn -pl blueprint-05-pii-tokenization-advisor -am spring-boot:run
 curl -s -X POST localhost:8085/api/chat -H 'Content-Type: application/json' \
      -d '{"message":"Mail me at priya.sharma@example.com"}'
+
+# run Blueprint 03 (modular RAG) offline on http://localhost:8083
+mvn -pl blueprint-03-modular-rag -am spring-boot:run
 ```
 
 Live tests against local Ollama: `mvn -B -Pit verify` (see [docs/setup.md](docs/setup.md)).

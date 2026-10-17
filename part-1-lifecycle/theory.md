@@ -21,14 +21,15 @@ flowchart LR
 |---|---|---|---|
 | 1 | Domain/intent modelling with records | Write the model's input and output as Java records first. The model has to fill a typed contract. | `IncidentTriage`, `StructuredOutputExample` |
 | 2 | Hermetic local prototyping with Dev Services | Run local infrastructure (Ollama, Postgres) with Testcontainers or Arconia Dev Services. No cloud. | stub models now; `-Pit` profile |
-| 3 | Context engineering & RAG ETL with TOON | Ingest, chunk, embed and retrieve. Serialise context compactly (TOON, Token-Oriented Object Notation). | Blueprint 03 (planned) |
+| 3 | Context engineering & RAG ETL with TOON | Ingest, chunk, embed and retrieve. Serialise context compactly (TOON, Token-Oriented Object Notation). | Blueprint 03 |
 | 4 | Dual-layer verification | Layer 1: deterministic tests with stub models. Layer 2: LLM-as-judge evaluators (relevancy, fact-checking). | stub tests; `pillar-eval-gates` (planned) |
 | 5 | Zero-trust guardrails with FinOps | Advisors that tokenise PII, enforce tool policies and reserve a token budget before each call. | Blueprint 05; `pillar-finops-budget` |
 | 6 | Semantic observability with OpenInference | Trace prompts, tools and tokens with OpenInference semantic conventions on OpenTelemetry. | planned |
 | 7 | Production runtime with virtual threads & GraalVM native | Use virtual threads for blocking LLM I/O, and native images for fast start-up. | `VirtualThreadFanOut`, `spring.threads.virtual.enabled` |
 
-> **TOON caveat:** the handbook says TOON saves 40–50% of tokens. That figure is **unverified**.
-> Measure it on your own payloads before you rely on it (see [version-notes](../docs/version-notes.md)).
+> **TOON caveat:** the handbook says TOON saves 40–50% of tokens. Blueprint 03 measured 38–39% against compact
+> JSON on uniform tables, 16% on long-text chunks, and 26–31% *more* tokens on nested data
+> (see [Blueprint 03 theory](../blueprint-03-modular-rag/theory.md#toon-measured)).
 
 ## Five pillars
 

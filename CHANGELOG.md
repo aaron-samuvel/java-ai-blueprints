@@ -5,6 +5,17 @@ versioning: [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- `blueprint-03-modular-rag/` (M2): keyword query router with SMALLTALK, POLICY, TECHNICAL and GENERAL branches;
+  domain-filtered `RoutingDocumentRetriever`; `RetrievalAugmentationAdvisor` with
+  `ContextualQueryAugmenter(allowEmptyContext=false)`; Markdown section parser; Docling stub parser;
+  classpath corpus ETL; `POST /api/ask`; pgvector + Ollama IT under `-Pit`.
+- TOON subset encoder and `ToonVsJsonTokenMeasurementTest` (JTokkit cl100k/o200k). Measured: 38–39% fewer tokens
+  than compact JSON on uniform tables, 16% on long-text chunks, 26–31% more on nested data.
+
+### Changed
+- Docs: README, mapping, version notes (TOON claim now measured), architecture and progress updated for M2.
+
 ## [0.1.0] - 2026-10-17 (foundation milestone, not yet published)
 
 ### Added

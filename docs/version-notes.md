@@ -19,8 +19,9 @@
 ## Handbook claims corrected or qualified
 | Handbook | What we do | Why |
 |---|---|---|
-| TOON gives 40–50% token savings | Treated as **unverified**; blueprint 03 will measure it | We found no reproducible benchmark for our payloads; savings depend on the data shape |
+| TOON gives 40–50% token savings | **Measured** in Blueprint 03: 38–39% vs compact JSON (65% vs pretty) on uniform tables; 16% on long-text chunks; nested data is 26–31% *larger* than compact JSON | Holds only for tabular payloads or a pretty-JSON baseline; see `blueprint-03-modular-rag/theory.md` |
 | Azure Cosmos DB (multi-agent repo) | **pgvector** on Postgres | Free, local, and unified with business data (pillar 5) |
 | Nacos (Spring AI Alibaba) | Plain Spring config / env vars | Too heavy for a learning repo; nothing here needs it |
+| Docling as a running service | `DoclingStubParser` (pre-converted Markdown) | Python service not needed for the default build; HTTP client planned |
 | Cloud-hosted models | **Ollama** (`llama3.2:3b`, `nomic-embed-text`) | No paid services; runs on an 8 GB PC |
 | `thomasvitale/arconia` | `arconia-io/arconia` | The old path returns 404 |
