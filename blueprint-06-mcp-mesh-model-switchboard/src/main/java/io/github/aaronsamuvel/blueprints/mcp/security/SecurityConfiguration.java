@@ -5,8 +5,10 @@ import java.nio.charset.StandardCharsets;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Condition;
+import org.springframework.context.annotation.ConditionContext;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,6 +16,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.core.type.AnnotatedTypeMetadata;
+import org.springframework.util.StringUtils;
 
 /**
  * OAuth2 resource server. Every request needs a valid JWT:
@@ -45,10 +49,18 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(name = "blueprints.security.dev-jwt-secret")
+    @Conditional(DevSecretPresent.class)
     JwtDecoder devJwtDecoder(@Value("${blueprints.security.dev-jwt-secret}") String secret) {
         byte[] key = secret.getBytes(StandardCharsets.UTF_8);
         if (key.length < 32) throw new IllegalStateException("blueprints.security.dev-jwt-secret must be at least 32 bytes");
         return NimbusJwtDecoder.withSecretKey(new SecretKeySpec(key, "HmacSHA256")).build();
+    }
+
+    /** The dev decoder is on only when the secret is non-blank (application.properties defaults it to empty). */
+    static final class DevSecretPresent implements Condition {
+        @Override
+        public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
+            return StringUtils.hasText(context.getEnvironment().getProperty("blueprints.security.dev-jwt-secret"));
+        }
     }
 }
