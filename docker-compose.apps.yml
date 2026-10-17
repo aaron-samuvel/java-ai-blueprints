@@ -1,0 +1,60 @@
+# Free local deployment of all seven blueprint apps (stand-in for Azure azd; see docs/deployment.md).
+#
+#   docker compose -f docker-compose.apps.yml up --build -d
+#   apps listen on 8081-8087 (B03, B05, B06 also expose /actuator/health)
+#
+# Images are built from the one multi-stage Dockerfile (MODULE build arg). Apps that call a model
+# reach the host's Ollama through host.docker.internal; no API keys or paid services are needed.
+# Backing services (pgvector, Redis, ...) stay in docker-compose.ai-support.yml; start both with
+#   docker compose -f docker-compose.ai-support.yml -f docker-compose.apps.yml up --build -d
+name: java-ai-blueprints
+
+x-app: &app
+  restart: unless-stopped
+  extra_hosts: ["host.docker.internal:host-gateway"]
+  environment:
+    OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+    SPRING_AI_OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+
+services:
+  b01:
+    <<: *app
+    build: { context: ., args: { MODULE: blueprint-01-goap-finops-incident-agent } }
+    image: java-ai-blueprints/blueprint-01-goap-finops-incident-agent:local
+    ports: ["8081:8081"]
+
+  b02:
+    <<: *app
+    build: { context: ., args: { MODULE: blueprint-02-langgraph4j-hitl-evaluation } }
+    image: java-ai-blueprints/blueprint-02-langgraph4j-hitl-evaluation:local
+    ports: ["8082:8082"]
+
+  b03:
+    <<: *app
+    build: { context: ., args: { MODULE: blueprint-03-modular-rag } }
+    image: java-ai-blueprints/blueprint-03-modular-rag:local
+    ports: ["8083:8083"]
+
+  b04:
+    <<: *app
+    build: { context: ., args: { MODULE: blueprint-04-transactional-swarm } }
+    image: java-ai-blueprints/blueprint-04-transactional-swarm:local
+    ports: ["8084:8084"]
+
+  b05:
+    <<: *app
+    build: { context: ., args: { MODULE: blueprint-05-pii-tokenization-advisor } }
+    image: java-ai-blueprints/blueprint-05-pii-tokenization-advisor:local
+    ports: ["8085:8085"]
+
+  b06:
+    <<: *app
+    build: { context: ., args: { MODULE: blueprint-06-mcp-mesh-model-switchboard } }
+    image: java-ai-blueprints/blueprint-06-mcp-mesh-model-switchboard:local
+    ports: ["8086:8086"]
+
+  b07:
+    <<: *app
+    build: { context: ., args: { MODULE: blueprint-07-a2a-nl2sql-agent } }
+    image: java-ai-blueprints/blueprint-07-a2a-nl2sql-agent:local
+    ports: ["8087:8087"]
