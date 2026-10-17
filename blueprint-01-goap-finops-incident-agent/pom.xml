@@ -12,11 +12,15 @@
   <description>GOAP planner + OODA loop FinOps incident agent (Embabel-style, self-contained).</description>
   <properties>
     <spring-boot.run.skip>false</spring-boot.run.skip>
+    <spring-shell.version>4.0.3</spring-shell.version>
   </properties>
   <dependencies>
     <dependency><groupId>io.github.aaron-samuvel</groupId><artifactId>shared</artifactId></dependency>
     <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-webmvc</artifactId></dependency>
     <dependency><groupId>org.springframework.ai</groupId><artifactId>spring-ai-client-chat</artifactId></dependency>
+    <!-- interactive CLI: only active with the "shell" profile -->
+    <dependency><groupId>org.springframework.shell</groupId><artifactId>spring-shell-starter</artifactId><version>${spring-shell.version}</version></dependency>
+    <dependency><groupId>org.springframework.shell</groupId><artifactId>spring-shell-jline</artifactId><version>${spring-shell.version}</version></dependency>
     <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-test</artifactId><scope>test</scope></dependency>
   </dependencies>
   <build>
