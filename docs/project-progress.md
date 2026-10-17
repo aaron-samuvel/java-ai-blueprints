@@ -41,3 +41,6 @@ blueprint-02 7, blueprint-04 8). `-Pit` test sources compile (including `OllamaJ
 ## Open items
 - Run `mvn -Pit verify` on the Windows PC with Ollama and Postgres (pgvector extension) running, with `PGPASSWORD` set in the shell.
 - Re-check the mapping against the original PDF when it's available.
+
+## Live verification (17 Oct 2026, IST)
+Full `-Pit` build passed on the owner's Windows PC with real Postgres/pgvector and Ollama; details in `handover.md`.

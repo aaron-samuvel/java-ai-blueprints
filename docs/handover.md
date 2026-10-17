@@ -53,3 +53,19 @@ The exact ports and run commands for each module are in its README.
 3. Decide whether to move the repo to Boot 4.1.x. That would allow trying Embabel for Blueprint 01.
 4. Add Testcontainers for Postgres/pgvector and Ollama, so the ITs can run in CI.
 5. Add a GitHub Actions workflow that runs `mvn -B verify` (offline tests only).
+
+## Live verification on Windows (17 Oct 2026, IST)
+
+`mvn -B -Pit clean verify` was run on the owner's Windows 11 PC (Temurin 21, Maven 3.10, Docker Postgres 16 + pgvector on port 15432, Ollama with llama3.2:3b and nomic-embed-text). Result: **BUILD SUCCESS, all 12 modules, 123 offline tests + 3 live integration tests**.
+
+| Live test | Result |
+|---|---|
+| `PgVectorRagIT` (pgvector + nomic-embed-text) | pass |
+| `OllamaPiiIT` (llama3.2:3b through the PII advisor) | pass (~20–48 s on CPU) |
+| `OllamaJudgeIT` (llama3.2:3b as judge) | pass: golden set relevancy 80%, facts 100%; all 3 regressions caught |
+
+Fixes found by the live run (all pushed):
+- Blueprint 03: the `it` profile pulled in `spring-boot-starter-jdbc`, which made the app test demand a DataSource; it now uses plain `spring-jdbc`.
+- Failsafe now uses `target/classes`, because Spring Boot's repackaged jar hides classes under `BOOT-INF/`.
+- Blueprint 05: Ollama chat auto-config is only enabled when `blueprints.model=ollama` (it previously created a second `ChatModel`).
+- Eval gates: small judges reply "Yes." rather than "yes", so `VerdictNormalizingChatModel` reduces replies to YES/NO. Spring AI's default relevancy prompt also made llama3.2:3b answer NO to correct answers, so the live gate uses `EvaluationGate.SMALL_JUDGE_RELEVANCY`.
