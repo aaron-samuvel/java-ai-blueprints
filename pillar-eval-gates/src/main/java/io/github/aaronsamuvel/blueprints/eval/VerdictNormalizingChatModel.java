@@ -28,6 +28,12 @@ public class VerdictNormalizingChatModel implements ChatModel {
         return new ChatResponse(java.util.List.of(new Generation(new AssistantMessage(normalize(text)))), raw.getMetadata());
     }
 
+    /** ChatClient merges these into every prompt; without delegating, the judge's model name is lost. */
+    @Override
+    public org.springframework.ai.chat.prompt.ChatOptions getDefaultOptions() {
+        return delegate.getDefaultOptions();
+    }
+
     static String normalize(String text) {
         if (text == null) return "NO";
         String t = text.strip().toLowerCase(Locale.ROOT).replaceAll("^[^a-z]+", "");
