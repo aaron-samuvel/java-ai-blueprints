@@ -13,6 +13,9 @@ This agent watches a cloud bill and runs an **OODA loop** (Observe, Orient, Deci
 
 ## Run it (Windows PowerShell)
 
+The app listens on port **8081** by default. If that port is taken (on the test PC another app was using it), set
+`PORT` first, for example `$env:PORT = 18081`, and use that port in the `curl` call.
+
 ```powershell
 mvn -B -pl blueprint-01-goap-finops-incident-agent -am spring-boot:run
 # in a second terminal:

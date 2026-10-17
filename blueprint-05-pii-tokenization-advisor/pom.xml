@@ -10,6 +10,9 @@
   <artifactId>blueprint-05-pii-tokenization-advisor</artifactId>
   <name>blueprint-05-pii-tokenization-advisor</name>
   <description>Zero-trust PII tokenisation advisor with @ToolPrivacyPolicy.</description>
+  <properties>
+    <spring-boot.run.skip>false</spring-boot.run.skip>
+  </properties>
   <dependencies>
     <dependency><groupId>io.github.aaron-samuvel</groupId><artifactId>shared</artifactId></dependency>
     <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-webmvc</artifactId></dependency>

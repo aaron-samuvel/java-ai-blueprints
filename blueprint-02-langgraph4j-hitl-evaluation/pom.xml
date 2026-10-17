@@ -11,6 +11,7 @@
   <name>blueprint-02-langgraph4j-hitl-evaluation</name>
   <description>LangGraph4j multi-agent graph: drafter, evaluator, human-in-the-loop approval with checkpoints.</description>
   <properties>
+    <spring-boot.run.skip>false</spring-boot.run.skip>
     <langgraph4j.version>1.9.5</langgraph4j.version>
   </properties>
   <dependencies>

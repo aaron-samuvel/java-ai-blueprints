@@ -10,6 +10,9 @@
   <artifactId>blueprint-06-mcp-mesh-model-switchboard</artifactId>
   <name>blueprint-06-mcp-mesh-model-switchboard</name>
   <description>MCP server mesh (Spring AI MCP starters) + scope-aware model switchboard secured with OAuth2 JWTs.</description>
+  <properties>
+    <spring-boot.run.skip>false</spring-boot.run.skip>
+  </properties>
   <dependencies>
     <dependency><groupId>io.github.aaron-samuvel</groupId><artifactId>shared</artifactId></dependency>
     <dependency><groupId>org.springframework.ai</groupId><artifactId>spring-ai-starter-mcp-server-webmvc</artifactId></dependency>

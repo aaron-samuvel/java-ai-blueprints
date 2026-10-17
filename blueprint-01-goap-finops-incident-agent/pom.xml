@@ -10,6 +10,9 @@
   <artifactId>blueprint-01-goap-finops-incident-agent</artifactId>
   <name>blueprint-01-goap-finops-incident-agent</name>
   <description>GOAP planner + OODA loop FinOps incident agent (Embabel-style, self-contained).</description>
+  <properties>
+    <spring-boot.run.skip>false</spring-boot.run.skip>
+  </properties>
   <dependencies>
     <dependency><groupId>io.github.aaron-samuvel</groupId><artifactId>shared</artifactId></dependency>
     <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-webmvc</artifactId></dependency>

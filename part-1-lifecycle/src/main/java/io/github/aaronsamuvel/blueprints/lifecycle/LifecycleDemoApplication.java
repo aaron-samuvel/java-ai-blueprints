@@ -6,7 +6,7 @@ import io.github.aaronsamuvel.blueprints.shared.StubChatModel;
 
 import org.springframework.ai.chat.client.ChatClient;
 
-/** Offline demo: run with {@code mvn -pl part-1-lifecycle exec:java} or from your IDE. */
+/** Offline demo: run with {@code mvn -pl part-1-lifecycle -am spring-boot:run}, {@code java -jar} on the packaged jar, or from your IDE. */
 public class LifecycleDemoApplication {
 
     public static void main(String[] args) {

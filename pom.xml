@@ -23,8 +23,6 @@
     <module>blueprint-02-langgraph4j-hitl-evaluation</module>
     <module>blueprint-04-transactional-swarm</module>
     <module>blueprint-06-mcp-mesh-model-switchboard</module>
-    
-    
   </modules>
 
   <properties>
@@ -34,6 +32,9 @@
     <spring-boot.version>4.0.8</spring-boot.version>
     <spring-ai.version>2.0.1</spring-ai.version>
     <surefire.version>3.5.4</surefire.version>
+    <!-- `mvn -pl <app> -am spring-boot:run` also visits this parent and the libraries; skip run there.
+         Runnable modules set this back to false. -->
+    <spring-boot.run.skip>true</spring-boot.run.skip>
   </properties>
 
   <dependencyManagement>

@@ -11,6 +11,7 @@
   <name>blueprint-07-a2a-nl2sql-agent</name>
   <description>A2A-style NL2SQL agent with a JSqlParser guard (SELECT-only, LIMIT 500) and 3 self-healing retries.</description>
   <properties>
+    <spring-boot.run.skip>false</spring-boot.run.skip>
     <jsqlparser.version>5.4</jsqlparser.version>
   </properties>
   <dependencies>

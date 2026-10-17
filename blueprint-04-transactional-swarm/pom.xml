@@ -10,6 +10,9 @@
   <artifactId>blueprint-04-transactional-swarm</artifactId>
   <name>blueprint-04-transactional-swarm</name>
   <description>Multi-agent transactional swarm with tenant-partitioned JDBC ChatMemory.</description>
+  <properties>
+    <spring-boot.run.skip>false</spring-boot.run.skip>
+  </properties>
   <dependencies>
     <dependency><groupId>io.github.aaron-samuvel</groupId><artifactId>shared</artifactId></dependency>
     <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-webmvc</artifactId></dependency>
