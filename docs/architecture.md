@@ -23,7 +23,7 @@ flowchart TB
   ev --> shared
   b2 --> ev
   b4 --> shared
-  root -.planned.-> b1[blueprint-01] & b6[blueprint-06]
+  root --> b1[blueprint-01] & b6[blueprint-06]
 ```
 
 ## Target runtime architecture (all blueprints)

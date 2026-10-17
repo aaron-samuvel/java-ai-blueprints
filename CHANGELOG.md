@@ -19,6 +19,11 @@ versioning: [SemVer](https://semver.org/).
 - `pillar-finops-budget/` (M3): `TokenBudgetLedger` (per-tenant reserve, commit, release; thread-safe),
   `FinOpsBudgetAdvisor`, `TokenEstimator` (JTokkit + margin), `PriceList` (INR per 1K tokens), `FinOpsDemo`.
 
+- `blueprint-01-goap-finops-incident-agent/` (M5): A* GOAP planner with negative preconditions; OODA FinOps
+  incident agent (re-plan every cycle, LLM only for diagnosis, escalation fallback); 10 tests.
+- `blueprint-06-mcp-mesh-model-switchboard/` (M5): Spring AI MCP server nodes (Streamable HTTP) behind JWT scopes,
+  `McpMesh` client merging tools across nodes, scope-aware model switchboard with downgrade; 9 tests.
+- `docs/handover.md` (M5).
 - `pillar-eval-gates/` (M4): `EvaluationGate` over Spring AI `RelevancyEvaluator` + `FactCheckingEvaluator`,
   deterministic `LexicalJudgeChatModel`, golden and regression sets, Ollama judge IT under `-Pit`.
 - `blueprint-02-langgraph4j-hitl-evaluation/` (M4): LangGraph4j 1.9.5 drafter, evaluator and human-review graph with

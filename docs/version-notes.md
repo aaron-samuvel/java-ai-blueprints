@@ -27,3 +27,11 @@
 | Docling as a running service | `DoclingStubParser` (pre-converted Markdown) | Python service not needed for the default build; HTTP client planned |
 | Cloud-hosted models | **Ollama** (`llama3.2:3b`, `nomic-embed-text`) | No paid services; runs on an 8 GB PC |
 | `thomasvitale/arconia` | `arconia-io/arconia` | The old path returns 404 |
+
+## M5 additions
+
+| Item | Version / decision |
+|---|---|
+| Embabel | 1.5.3 (latest on Maven Central) targets Spring Boot 4.1.1 / Spring AI 2.0.1 per its POM. Not used: the repo stays on Boot 4.0.8, and Blueprint 01 has its own GOAP planner. Checked from POM metadata only; not run. |
+| MCP Java SDK | 2.0.0 (`mcp-core`, `mcp-json-jackson3`), via Spring AI 2.0.1 MCP starters, Streamable HTTP transport |
+| Security | `spring-boot-starter-security-oauth2-resource-server` (Boot 4.0.8); HS256 dev decoder only |

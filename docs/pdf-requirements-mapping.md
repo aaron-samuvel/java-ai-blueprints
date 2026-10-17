@@ -45,12 +45,12 @@ Status: **done** = implemented and tested · **catalogue** = documentation only,
 
 | # | Handbook blueprint | Folder | Status |
 |---|---|---|---|
-| 1 | GOAP/OODA FinOps incident agent (Embabel) | `blueprint-01-goap-finops-incident-agent` | planned |
+| 1 | GOAP/OODA FinOps incident agent (Embabel) | `blueprint-01-goap-finops-incident-agent` | **done** (10 tests): own GOAP A* + OODA loop; Embabel not used (1.5.3 targets Boot 4.1.1, see module README) |
 | 2 | LangGraph4j HITL multi-agent evaluation | `blueprint-02-langgraph4j-hitl-evaluation` | **done** (7 tests; LangGraph4j 1.9.5) |
 | 3 | Modular, branching, conditional RAG (Docling, PGVector) | `blueprint-03-modular-rag` | **done** (20 tests + 1 pgvector IT; Docling stubbed) |
 | 4 | Multi-agent transactional swarm, tenant-partitioned ChatMemory | `blueprint-04-transactional-swarm` | **done** (8 tests; H2, @Transactional rollback) |
 | 5 | Zero-trust PII tokenisation advisor with @ToolPrivacyPolicy | `blueprint-05-pii-tokenization-advisor` | **done** (18 tests + 1 IT) |
-| 6 | MCP server mesh + model switchboard (OAuth2) | `blueprint-06-mcp-mesh-model-switchboard` | planned |
+| 6 | MCP server mesh + model switchboard (OAuth2) | `blueprint-06-mcp-mesh-model-switchboard` | **done** (9 tests): Spring AI MCP Streamable HTTP nodes, 2-node mesh, JWT scopes (HS256 dev decoder), switchboard downgrade |
 | 7 | A2A mesh + self-healing NL2SQL (JSqlParser guard, LIMIT 500, 3 retries) | `blueprint-07-a2a-nl2sql-agent` | **done** (22 tests): guard, LIMIT 500, 1+3 attempts on H2; A2A-style single agent (multi-agent mesh planned) |
 
 ## Part IV

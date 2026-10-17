@@ -7,7 +7,7 @@ multi-module project. It has a folder per topic, with theory, runnable examples,
 a project and tests. Every module builds and tests **without Docker, cloud accounts or a live LLM**:
 tests use deterministic stub models from [`shared/`](shared). Live Ollama tests are opt-in (`-Pit`).
 
-> **Status:** foundation milestone. Part I, Blueprints 02–05 and 07, and both Part IV pillars (FinOps budget, evaluation gates) are done. Blueprints 01 and 06 are planned.
+> **Status:** all modules done (M5). Part I, Blueprints 01–07, and both Part IV pillars are implemented with offline tests. Live `-Pit` tests compile but have not been run. See [`docs/handover.md`](docs/handover.md).
 > See [docs/project-progress.md](docs/project-progress.md).
 
 ## Stack
@@ -32,12 +32,12 @@ The reasons for these versions are in [docs/version-notes.md](docs/version-notes
 | [`shared/`](shared) | (support code) stub `ChatModel`/`EmbeddingModel`, common records | done |
 | [`part-1-lifecycle/`](part-1-lifecycle) | Part I: J-AIDLC, five pillars, framework matrix | done |
 | [`part-2-github-gems/`](part-2-github-gems) | Part II: 10 open-source repos | catalogue |
-| [`blueprint-01-goap-finops-incident-agent/`](blueprint-01-goap-finops-incident-agent) | Blueprint 1 | planned |
+| [`blueprint-01-goap-finops-incident-agent/`](blueprint-01-goap-finops-incident-agent) | Blueprint 1 | done |
 | [`blueprint-02-langgraph4j-hitl-evaluation/`](blueprint-02-langgraph4j-hitl-evaluation) | Blueprint 2 | **done** |
 | [`blueprint-03-modular-rag/`](blueprint-03-modular-rag) | Blueprint 3 | **done** |
 | [`blueprint-04-transactional-swarm/`](blueprint-04-transactional-swarm) | Blueprint 4 | **done** |
 | [`blueprint-05-pii-tokenization-advisor/`](blueprint-05-pii-tokenization-advisor) | Blueprint 5 | **done** |
-| [`blueprint-06-mcp-mesh-model-switchboard/`](blueprint-06-mcp-mesh-model-switchboard) | Blueprint 6 | planned |
+| [`blueprint-06-mcp-mesh-model-switchboard/`](blueprint-06-mcp-mesh-model-switchboard) | Blueprint 6 | done |
 | [`blueprint-07-a2a-nl2sql-agent/`](blueprint-07-a2a-nl2sql-agent) | Blueprint 7 | **done** |
 | [`pillar-finops-budget/`](pillar-finops-budget) | Part IV: FinOps budget advisor | **done** |
 | [`pillar-eval-gates/`](pillar-eval-gates) | Part IV: JUnit evaluation gates | **done** |
