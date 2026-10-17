@@ -1,0 +1,85 @@
+# Backing services for all seven blueprints (companion guide, Part II and Part IV).
+#
+#   cp .env.template .env      # then edit .env: set POSTGRES_PASSWORD (never commit .env)
+#   docker compose -f docker-compose.ai-support.yml up -d
+#   ./scripts/preflight-check.sh          (Windows: .\scripts\preflight-check.ps1)
+#
+# Host ports come from .env so they can avoid clashes (for example a Postgres already on 5432).
+# Ollama is expected on the host (http://localhost:11434). An Ollama container is available
+# behind the "ollama" profile:  docker compose -f docker-compose.ai-support.yml --profile ollama up -d
+#
+# Only postgres-pgvector and redis-stack are needed by the live tests in this repo; the others are
+# optional (Presidio for Blueprint 05, Nacos for Blueprint 07 discovery, otel-lgtm for traces).
+name: java-ai-blueprints
+
+services:
+  # Blueprints 02, 03, 04, 07: vector store, chat memory, HITL checkpoints, NL2SQL target database
+  postgres-pgvector:
+    image: pgvector/pgvector:pg17
+    ports: ["${PG_HOST_PORT:-5432}:5432"]
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-springai}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-ai_enterprise_db}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # vector, hstore and uuid-ossp extensions on first start
+      - ./infra/postgres/init.sql:/docker-entrypoint-initdb.d/01-extensions.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # Blueprint 05: optional Microsoft Presidio analyzer (the image is Python-based)
+  presidio-analyzer:
+    image: mcr.microsoft.com/presidio-analyzer:latest
+    ports: ["${PRESIDIO_HOST_PORT:-5002}:3000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:3000/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
+  # Blueprint 07: optional Nacos registry (the repo itself uses a local agent registry; see docs/environment.md)
+  nacos-standalone:
+    image: nacos/nacos-server:v2.4.2
+    ports: ["${NACOS_HOST_PORT:-8848}:8848", "${NACOS_GRPC_HOST_PORT:-9848}:9848"]
+    environment:
+      MODE: standalone
+    volumes:
+      - nacosdata:/home/nacos/data
+
+  # Part IV: FinOps budget reservations and semantic cache
+  redis-stack:
+    image: redis/redis-stack-server:latest
+    ports: ["${REDIS_HOST_PORT:-6379}:6379"]
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # All blueprints: Grafana (3000) plus OTLP gRPC (4317) and HTTP (4318) for logs, metrics and traces
+  otel-lgtm:
+    image: grafana/otel-lgtm:latest
+    ports: ["${GRAFANA_HOST_PORT:-3000}:3000", "${OTLP_GRPC_HOST_PORT:-4317}:4317", "${OTLP_HTTP_HOST_PORT:-4318}:4318"]
+    volumes:
+      - lgtmdata:/data
+
+  # Optional: Ollama in a container instead of on the host
+  ollama:
+    image: ollama/ollama:latest
+    profiles: ["ollama"]
+    ports: ["${OLLAMA_HOST_PORT:-11434}:11434"]
+    volumes:
+      - ollamadata:/root/.ollama
+
+volumes:
+  pgdata:
+  nacosdata:
+  redisdata:
+  lgtmdata:
+  ollamadata:
