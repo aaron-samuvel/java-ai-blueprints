@@ -50,6 +50,14 @@ public class EvaluationGate {
         this.facts = FactCheckingEvaluator.builder(ChatClient.builder(judge)).build();
     }
 
+    public RelevancyEvaluator relevancyEvaluator() {
+        return relevancy;
+    }
+
+    public FactCheckingEvaluator factCheckingEvaluator() {
+        return facts;
+    }
+
     public EvaluationResponse relevancy(EvalCase c) {
         return relevancy.evaluate(new EvaluationRequest(c.question(), docs(c), c.answer()));
     }
