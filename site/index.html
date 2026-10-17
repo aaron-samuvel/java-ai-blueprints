@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>java-ai-blueprints · Enterprise AI blueprints with Spring Boot 4 &amp; Spring AI 2</title>
+<meta name="description" content="Working enterprise AI blueprints in Java 21 with Spring Boot 4 and Spring AI 2: GOAP agents, LangGraph4j human-in-the-loop, modular RAG, transactional swarms, PII tokenisation, MCP mesh, A2A NL2SQL, FinOps budgets and evaluation gates.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="tag" style="color:var(--accent2);font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:.8rem">Open-source showcase</div>
+    <h1>java-ai-blueprints</h1>
+    <p class="lead">Enterprise Java &amp; Spring Boot AI systems, built as working code. A Maven multi-module project with one folder per topic: theory, runnable examples, exercises, a project and tests. Every module builds and tests offline with deterministic stub models; live tests against Ollama and pgvector are opt-in.</p>
+    <div class="badges">
+      <span class="badge">Java <b>21</b></span>
+      <span class="badge">Spring Boot <b>4.0.8</b></span>
+      <span class="badge">Spring AI <b>2.0.1</b></span>
+      <span class="badge">LangGraph4j <b>1.9.5</b></span>
+      <span class="badge">MCP · pgvector · Ollama</span>
+    </div>
+    <a class="btn" href="https://github.com/aaron-samuvel/java-ai-blueprints">View on GitHub</a>
+    <a class="btn ghost" href="https://github.com/aaron-samuvel/java-ai-blueprints/blob/main/docs/setup.md">Setup guide</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="notice"><strong>This page documents the apps; it is not a live demo.</strong> The blueprints are Java servers (Spring Boot) that need a JVM, and some need PostgreSQL/pgvector and Ollama, so they run on your own machine. The requests and responses below are real results recorded on 17 Oct 2026 by running each module on a Windows PC, mostly with the offline stub model (which simply echoes, as each README describes).</div>
+
+  <div class="stats">
+    <div class="stat"><div class="n">12</div><div class="l">Maven modules, all BUILD SUCCESS</div></div>
+    <div class="stat"><div class="n">123</div><div class="l">offline unit tests passing</div></div>
+    <div class="stat"><div class="n">3</div><div class="l">live tests passing (pgvector + Ollama)</div></div>
+    <div class="stat"><div class="n">0</div><div class="l">cloud accounts needed to build</div></div>
+  </div>
+
+  <p>Full build on Windows: <code>mvn -B -Pit clean verify</code> → <span class="ok">BUILD SUCCESS</span> (123 unit + 3 live tests). Without <code>-Pit</code>, <code>mvn -B verify</code> needs no Docker, cloud account or LLM.</p>
+
+  <nav class="toc" aria-label="Modules">
+    <a href="#part-1-lifecycle">Part I</a><a href="#bp01">01 GOAP FinOps</a><a href="#bp02">02 LangGraph4j HITL</a><a href="#bp03">03 Modular RAG</a><a href="#bp04">04 Swarm</a><a href="#bp05">05 PII advisor</a><a href="#bp06">06 MCP mesh</a><a href="#bp07">07 A2A NL2SQL</a><a href="#finops">FinOps budget</a><a href="#eval">Eval gates</a><a href="#shared">Shared</a><a href="#part-2">Part II</a>
+  </nav>
+
+  <h2 class="section">Part I · Foundations</h2>
+  <div class="grid">
+    <article class="card" id="part-1-lifecycle">
+      <span class="tag">part-1-lifecycle · CLI demo</span>
+      <h3>J-AIDLC, five pillars, framework matrix</h3>
+      <p>The Java AI Development Lifecycle, the five Java-specific pillars and the framework matrix, each backed by a small offline example: a record as a structured-output contract, <code>ChatClient…entity(...)</code>, an audit-trail <code>CallAdvisor</code>, and virtual-thread fan-out.</p>
+      <h4>Run locally</h4>
+<pre>mvn -B -pl part-1-lifecycle -am verify            # 4 tests, offline
+mvn -B -pl part-1-lifecycle -am package -DskipTests
+java -jar part-1-lifecycle/target/part-1-lifecycle-0.1.0-SNAPSHOT.jar</pre>
+      <h4>Real result</h4>
+<pre>IncidentTriage[severity=HIGH, service=checkout, summary=p95 latency over 2s, nextSteps=[scale pods, check DB]]</pre>
+      <ul class="res"><li><span class="ok">4 tests pass</span></li></ul>
+      <div class="foot"><a href="https://github.com/aaron-samuvel/java-ai-blueprints/tree/main/part-1-lifecycle">Open folder on GitHub →</a></div>
+    </article>
+  </div>
+
+  <h2 class="section">Part III · Blueprints</h2>
+  <div class="grid">
+    <article class="card" id="bp01">
+      <span class="tag">Blueprint 01 · port 8081</span>
+      <h3>GOAP / OODA FinOps incident agent</h3>
+      <p>Watches a cloud bill and runs an OODA loop (Observe, Orient, Decide, Act). Decide is a Goal-Oriented Action Planner searched with A*; the agent re-plans every cycle and runs only the first action, so new facts (a denied approval, an unknown cause) change course.</p>
+      <h4>Run locally</h4>
+<pre>mvn -B -pl blueprint-01-goap-finops-incident-agent -am spring-boot:run
+curl -X POST http://localhost:8081/api/incidents/run \
+  -H "Content-Type: text/csv" \
+  --data-binary "@blueprint-01-goap-finops-incident-agent/src/main/resources/billing-sample.csv"</pre>
+      <h4>Real result</h4>
+<pre>HTTP 200
+{"outcome":"ESCALATED","service":"batch-etl","todayInr":6400.00,"baselineInr":803.33,"cause":"UNKNOWN", …}</pre>
+      <p style="font-size:.85rem;color:var(--muted)">Recorded with <code>PORT=18081</code> because 8081 was busy on the test PC; the default is 8081.</p>
+      <div class="foot"><a href="https://github.com/aaron-samuvel/java-ai-blueprints/tree/main/blueprint-01-goap-finops-incident-agent">Open folder on GitHub →</a></div>
+    </article>
+
+    <article class="card" id="bp02">
+      <span class="tag">Blueprint 02 · port 8082</span>
+      <h3>LangGraph4j human-in-the-loop evaluation</h3>
+      <p>A LangGraph4j state graph: a drafter agent writes, an evaluator agent gates it with Spring AI evaluators, then the graph pauses for a human. The paused state is checkpointed so a reviewer can approve or reject over REST; a rejection sends the draft back with the comment.</p>
+      <h4>Run locally</h4>
+<pre>mvn -pl blueprint-02-langgraph4j-hitl-evaluation -am spring-boot:run
+# POST http://localhost:8082/api/reviews, then approve the review</pre>
+      <h4>Real result</h4>
+      <ul class="res">
+        <li><code>POST /api/reviews</code> → <span class="ok">AWAITING_HUMAN</span></li>
+        <li>approve → <span class="ok">PUBLISHED</span></li>
+        <li>history shows 3 draft/review rounds</li>
+      </ul>
+      <div class="foot"><a href="https://github.com/aaron-samuvel/java-ai-blueprints/tree/main/blueprint-02-langgraph4j-hitl-evaluation">Open folder on GitHub →</a></div>
+    </article>
+
+    <article class="card" id="bp03">
+      <span class="tag">Blueprint 03 · port 8083</span>
+      <h3>Modular, branching, conditional RAG</h3>
+      <p>Built from Spring AI's modular RAG parts: a router sends each question down a branch, a domain-filtered retriever searches only the matching corpus, and a conditional augmenter makes the model decline when nothing relevant is found. Production storage is pgvector; includes a measured TOON-vs-JSON token comparison.</p>
+      <h4>Run locally</h4>
+<pre>mvn -pl blueprint-03-modular-rag -am spring-boot:run    # stub model
+curl -X POST http://localhost:8083/api/ask ...  # "How much sick leave do I get?"</pre>
+      <h4>Real result</h4>
+      <ul class="res">
+        <li>intent = <span class="ok">POLICY</span></li>
+        <li>sources: <code>leave-policy.md#Sick leave</code>, <code>leave-policy.md#Annual leave</code></li>
+        <li>answer contains “Sick leave is 12 days per year…”</li>
+        <li>Live test <code>PgVectorRagIT</code> (real pgvector + <code>nomic-embed-text</code>): <span class="ok">passed</span></li>
+      </ul>
+      <div class="foot"><a href="https://github.com/aaron-samuvel/java-ai-blueprints/tree/main/blueprint-03-modular-rag">Open folder on GitHub →</a></div>
+    </article>
+
+    <article class="card" id="bp04">
+      <span class="tag">Blueprint 04 · port 8084</span>
+      <h3>Transactional agent swarm, tenant-partitioned memory</h3>
+      <p>Triage, refund and notify agents share one conversation memory and run inside one <code>@Transactional</code> boundary. If any agent or rule fails, the refund row, the outbox message and the chat memory roll back together. Memory is stored per tenant in the same database.</p>
+      <h4>Run locally</h4>
+<pre>mvn -pl blueprint-04-transactional-swarm -am spring-boot:run
+curl -X POST http://localhost:8084/api/conversations/c-1/messages \
+  -H "X-Tenant-Id: acme" -H "Content-Type: application/json" -d ...</pre>
+      <h4>Real result</h4>
+<pre>HTTP 200
+{"route":"ECHO: MY ORDER ORD-1 ARRIVED BROKEN, REFUND PLEASE","refund":null, …}</pre>
+      <ul class="res"><li>Without <code>X-Tenant-Id</code> → <span class="no">400</span> (correctly refused)</li></ul>
+      <div class="foot"><a href="https://github.com/aaron-samuvel/java-ai-blueprints/tree/main/blueprint-04-transactional-swarm">Open folder on GitHub →</a></div>
+    </article>
+
+    <article class="card" id="bp05">
+      <span class="tag">Blueprint 05 · port 8085</span>
+      <h3>Zero-trust PII tokenisation advisor</h3>
+      <p>Raw personal data never reaches the model. A Spring AI <code>CallAdvisor</code> replaces PII (email, PAN, card, Aadhaar, Indian phone) with opaque tokens like <code>&lt;&lt;EMAIL_1&gt;&gt;</code>, then swaps real values back before the answer reaches the user. Tool outputs are governed per method by <code>@ToolPrivacyPolicy</code>.</p>
+      <h4>Run locally</h4>
+<pre>mvn -pl blueprint-05-pii-tokenization-advisor -am spring-boot:run   # stub model
+BLUEPRINTS_MODEL=ollama mvn -Pit -pl blueprint-05-pii-tokenization-advisor -am spring-boot:run</pre>
+      <h4>Real result (stub model)</h4>
+<pre>POST /api/chat → HTTP 200
+{"answer":"echo: My PAN is ABCDE1234F and phone +91 98765 43210", …}</pre>
+      <p style="font-size:.85rem;color:var(--muted)">The values above are the module's built-in sample test data, not real personal data. The stub echoes the restored text.</p>
+      <ul class="res"><li>Live test <code>OllamaPiiIT</code> with <code>llama3.2:3b</code>: <span class="ok">passed</span></li></ul>
+      <div class="foot"><a href="https://github.com/aaron-samuvel/java-ai-blueprints/tree/main/blueprint-05-pii-tokenization-advisor">Open folder on GitHub →</a></div>
+    </article>
+
+    <article class="card" id="bp06">
+      <span class="tag">Blueprint 06 · port 8086</span>
+      <h3>MCP server mesh and model switchboard (OAuth2)</h3>
+      <p>A Spring AI MCP server (Streamable HTTP at <code>/mcp</code>), a mesh client that merges tools from N nodes, an OAuth2 resource server, and a switchboard that routes CHAT → LOCAL_FAST, ANALYSIS → LOCAL_SMART, CRITICAL → PREMIUM, downgrading when the <code>models.premium</code> scope is missing.</p>
+      <h4>Run locally</h4>
+<pre># set BLUEPRINTS_DEV_JWT_SECRET to a random value of 32+ bytes first
+mvn -B -pl blueprint-06-mcp-mesh-model-switchboard -am spring-boot:run
+curl -X POST http://localhost:8086/api/switchboard/ask \
+  -H "Authorization: Bearer &lt;token&gt;" -H "Content-Type: application/json" \
+  -d '{"task":"CRITICAL","message":"hi"}'</pre>
+      <h4>Real result</h4>
+      <ul class="res">
+        <li>No token → <span class="no">401</span></li>
+        <li>Basic access, CRITICAL → <span class="ok">LOCAL_SMART</span> (downgraded)</li>
+        <li>Premium scope, CRITICAL → <span class="ok">PREMIUM</span></li>
+        <li>CHAT → <span class="ok">LOCAL_FAST</span></li>
+        <li><code>/mcp</code> without tool scope → <span class="no">403</span>; with scope, tools: <code>listServices</code>, <code>monthToDateCost</code></li>
+      </ul>
+      <div class="foot"><a href="https://github.com/aaron-samuvel/java-ai-blueprints/tree/main/blueprint-06-mcp-mesh-model-switchboard">Open folder on GitHub →</a></div>
+    </article>
+
+    <article class="card" id="bp07">
+      <span class="tag">Blueprint 07 · port 8087</span>
+      <h3>A2A agent + self-healing NL2SQL</h3>
+      <p>Turns questions into SQL and can be called by other agents. Every query passes a JSqlParser guard: one read-only <code>SELECT</code>, allow-listed tables, <code>LIMIT 500</code> enforced. Rejected SQL is fed back to the model for up to 3 self-healing retries (4 calls max). Runs on H2 offline.</p>
+      <h4>Run locally</h4>
+<pre>mvn -pl blueprint-07-a2a-nl2sql-agent -am spring-boot:run   # H2, stub model
+curl http://localhost:8087/.well-known/agent.json</pre>
+      <h4>Real result</h4>
+      <ul class="res">
+        <li><code>GET /.well-known/agent.json</code> → <span class="ok">200</span></li>
+        <li>NL2SQL task with the stub model → <span class="no">FAILED</span> after 4 attempts (SQL does not parse), exactly as the README describes: the stub cannot write SQL, so this shows the guard and retry loop working. Use a real model for answers.</li>
+      </ul>
+      <div class="foot"><a href="https://github.com/aaron-samuvel/java-ai-blueprints/tree/main/blueprint-07-a2a-nl2sql-agent">Open folder on GitHub →</a></div>
+    </article>
+  </div>
+
+  <h2 class="section">Part IV · Pillars</h2>
+  <div class="grid">
+    <article class="card" id="finops">
+      <span class="tag">pillar-finops-budget · library + demo</span>
+      <h3>FinOps reserve-call-commit budget advisor</h3>
+      <p>A Spring AI <code>CallAdvisor</code> that gives each tenant a token budget and enforces it with reserve → call → commit. Over-budget calls are blocked before the model is called, concurrent calls can't overspend, and failed calls release their reservation.</p>
+      <h4>Run locally</h4>
+<pre>mvn -q -pl pillar-finops-budget exec:java \
+  -Dexec.mainClass=io.github.aaronsamuvel.blueprints.finops.FinOpsDemo</pre>
+      <h4>Real result</h4>
+<pre>calls 1-11: ok
+call 12: BLOCKED: token budget exceeded for tenant 'default': requested 62, available 58</pre>
+      <ul class="res"><li><span class="ok">10 tests pass</span></li></ul>
+      <div class="foot"><a href="https://github.com/aaron-samuvel/java-ai-blueprints/tree/main/pillar-finops-budget">Open folder on GitHub →</a></div>
+    </article>
+
+    <article class="card" id="eval">
+      <span class="tag">pillar-eval-gates · library</span>
+      <h3>JUnit evaluation gates</h3>
+      <p>JUnit tests that fail the build when AI answers stop being relevant or grounded, using Spring AI's <code>RelevancyEvaluator</code> and <code>FactCheckingEvaluator</code> over a golden set. The judge is pluggable: a deterministic lexical judge offline, or Ollama <code>llama3.2:3b</code> live.</p>
+      <h4>Run locally</h4>
+<pre>mvn -B -pl pillar-eval-gates -am verify        # offline judge
+mvn -B -Pit -pl pillar-eval-gates -am verify   # live Ollama judge</pre>
+      <h4>Real result</h4>
+      <ul class="res">
+        <li><span class="ok">13 tests pass</span></li>
+        <li>Live judge (<code>llama3.2:3b</code>): golden relevancy <b>80%</b>, facts <b>100%</b></li>
+        <li>All <b>3</b> deliberate regressions caught</li>
+      </ul>
+      <div class="foot"><a href="https://github.com/aaron-samuvel/java-ai-blueprints/tree/main/pillar-eval-gates">Open folder on GitHub →</a></div>
+    </article>
+
+    <article class="card" id="shared">
+      <span class="tag">shared · library</span>
+      <h3>Shared stub models</h3>
+      <p>Deterministic <code>StubChatModel</code> and <code>StubEmbeddingModel</code> plus their Spring configuration, so every module builds and tests without a live LLM, Docker or cloud account.</p>
+      <h4>Run locally</h4>
+<pre>mvn -B -pl shared verify</pre>
+      <h4>Real result</h4>
+      <ul class="res"><li><span class="ok">2 tests pass</span></li></ul>
+      <div class="foot"><a href="https://github.com/aaron-samuvel/java-ai-blueprints/tree/main/shared">Open folder on GitHub →</a></div>
+    </article>
+
+    <article class="card" id="part-2">
+      <span class="tag">part-2-github-gems · catalogue</span>
+      <h3>Part II: GitHub gems</h3>
+      <p>A curated README of open-source Java AI repositories worth studying (Embabel, LangGraph4j, Spring AI sample apps, Arconia, privacy guardrails, multi-agent Spring AI and more), each mapped to the blueprint it relates to. Every link was checked against the GitHub API.</p>
+      <h4>Run locally</h4>
+<pre>Nothing to run: it is a reading list.</pre>
+      <div class="foot"><a href="https://github.com/aaron-samuvel/java-ai-blueprints/tree/main/part-2-github-gems">Open folder on GitHub →</a></div>
+    </article>
+  </div>
+
+  <h2 class="section">Run everything</h2>
+<pre>git clone https://github.com/aaron-samuvel/java-ai-blueprints.git
+cd java-ai-blueprints
+mvn -B verify          # offline: all modules, stub models
+mvn -B -Pit verify     # adds live tests: needs PostgreSQL+pgvector and Ollama (llama3.2:3b, nomic-embed-text)</pre>
+  <p>See the <a href="https://github.com/aaron-samuvel/java-ai-blueprints/blob/main/docs/setup.md">setup guide</a>, <a href="https://github.com/aaron-samuvel/java-ai-blueprints/blob/main/docs/architecture.md">architecture</a> and <a href="https://github.com/aaron-samuvel/java-ai-blueprints/blob/main/docs/handover.md">handover notes</a>.</p>
+</main>
+
+<footer>
+  <div class="wrap">java-ai-blueprints by <a href="https://github.com/aaron-samuvel">aaron-samuvel</a> · Results recorded 17 Oct 2026 · Static page served by GitHub Pages; the apps themselves run locally.</div>
+</footer>
+</body>
+</html>

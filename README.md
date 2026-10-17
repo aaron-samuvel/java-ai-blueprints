@@ -2,12 +2,14 @@
 
 Enterprise Java & Spring Boot AI systems, built as working code you can run offline.
 
+**Showcase site:** https://aaron-samuvel.github.io/java-ai-blueprints/ (documents each module with real recorded results; the apps themselves run locally).
+
 This repository turns the *Enterprise Java & Spring Boot AI Systems* handbook into a Maven
 multi-module project. It has a folder per topic, with theory, runnable examples, exercises,
 a project and tests. Every module builds and tests **without Docker, cloud accounts or a live LLM**:
 tests use deterministic stub models from [`shared/`](shared). Live Ollama tests are opt-in (`-Pit`).
 
-> **Status:** all modules done (M5). Part I, Blueprints 01–07, and both Part IV pillars are implemented with offline tests. Live `-Pit` tests compile but have not been run. See [`docs/handover.md`](docs/handover.md).
+> **Status:** all modules done (M5). Part I, Blueprints 01–07, and both Part IV pillars are implemented with offline tests. The full `mvn -B -Pit clean verify` (123 unit + 3 live tests against pgvector and Ollama) passed on Windows on 17 Oct 2026. See [`docs/handover.md`](docs/handover.md).
 > See [docs/project-progress.md](docs/project-progress.md).
 
 ## Stack
