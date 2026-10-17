@@ -66,10 +66,16 @@ class IngestionServiceTest {
             write(out, "corpus/policy/leave.md", "# Sick leave\n12 days per year\n");
             write(out, "corpus/technical/kafka.md", "# Lag\ncheck consumers\n");
         }
+        // The JDK caches open JarFiles for jar: URLs; on Windows that lock stops @TempDir from deleting
+        // corpus.jar. Without caching, every jar: connection closes its JarFile when it is done.
+        boolean jarCaches = java.net.URLConnection.getDefaultUseCaches("jar");
+        java.net.URLConnection.setDefaultUseCaches("jar", false);
         try (URLClassLoader cl = new URLClassLoader(new URL[] {jar.toUri().toURL()}, null)) {
             IngestionService fromJar = new IngestionService(List.of(new MarkdownSectionParser()),
                     SimpleVectorStore.builder(new StubEmbeddingModel(256)).build());
             assertThat(fromJar.ingestClasspathCorpus(new PathMatchingResourcePatternResolver(cl))).isEqualTo(2);
+        } finally {
+            java.net.URLConnection.setDefaultUseCaches("jar", jarCaches);
         }
     }
 
