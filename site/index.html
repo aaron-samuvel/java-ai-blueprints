@@ -29,13 +29,13 @@
   <div class="notice"><strong>This page documents the apps; it is not a live demo.</strong> The blueprints are Java servers (Spring Boot) that need a JVM, and some need PostgreSQL/pgvector and Ollama, so they run on your own machine. The requests and responses below are real results recorded on 17 Oct 2026 by running each module on a Windows PC, mostly with the offline stub model (which simply echoes, as each README describes).</div>
 
   <div class="stats">
-    <div class="stat"><div class="n">12</div><div class="l">Maven modules, all BUILD SUCCESS</div></div>
-    <div class="stat"><div class="n">123</div><div class="l">offline unit tests passing</div></div>
+    <div class="stat"><div class="n">13</div><div class="l">Maven projects, all BUILD SUCCESS</div></div>
+    <div class="stat"><div class="n">134</div><div class="l">offline tests, run by CI on every push</div></div>
     <div class="stat"><div class="n">3</div><div class="l">live tests passing (pgvector + Ollama)</div></div>
     <div class="stat"><div class="n">0</div><div class="l">cloud accounts needed to build</div></div>
   </div>
 
-  <p>Full build on Windows: <code>mvn -B -Pit clean verify</code> → <span class="ok">BUILD SUCCESS</span> (123 unit + 3 live tests). Without <code>-Pit</code>, <code>mvn -B verify</code> needs no Docker, cloud account or LLM.</p>
+  <p>Full build on Windows: <code>mvn -B -Pit clean verify</code> → <span class="ok">BUILD SUCCESS</span> (123 unit + 3 live tests, before the audit added 11 more offline tests). Without <code>-Pit</code>, <code>mvn -B verify</code> needs no Docker, cloud account or LLM, and <a href="https://github.com/aaron-samuvel/java-ai-blueprints/actions/workflows/ci.yml">CI</a> runs it on every push and pull request.</p>
 
   <nav class="toc" aria-label="Modules">
     <a href="#part-1-lifecycle">Part I</a><a href="#bp01">01 GOAP FinOps</a><a href="#bp02">02 LangGraph4j HITL</a><a href="#bp03">03 Modular RAG</a><a href="#bp04">04 Swarm</a><a href="#bp05">05 PII advisor</a><a href="#bp06">06 MCP mesh</a><a href="#bp07">07 A2A NL2SQL</a><a href="#finops">FinOps budget</a><a href="#eval">Eval gates</a><a href="#shared">Shared</a><a href="#part-2">Part II</a>
@@ -146,8 +146,12 @@ BLUEPRINTS_MODEL=ollama mvn -Pit -pl blueprint-05-pii-tokenization-advisor -am s
       <h4>Run locally</h4>
 <pre># set BLUEPRINTS_DEV_JWT_SECRET to a random value of 32+ bytes first
 mvn -B -pl blueprint-06-mcp-mesh-model-switchboard -am spring-boot:run
+# second shell, same secret: mint a local dev token (after mvn -q -am install -DskipTests)
+TOKEN=$(mvn -q -pl blueprint-06-mcp-mesh-model-switchboard exec:java \
+  -Dexec.mainClass=io.github.aaronsamuvel.blueprints.mcp.security.DevJwtMinter \
+  -Dexec.args="models.use models.premium")
 curl -X POST http://localhost:8086/api/switchboard/ask \
-  -H "Authorization: Bearer &lt;token&gt;" -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
   -d '{"task":"CRITICAL","message":"hi"}'</pre>
       <h4>Real result</h4>
       <ul class="res">
@@ -183,7 +187,8 @@ curl http://localhost:8087/.well-known/agent.json</pre>
       <h3>FinOps reserve-call-commit budget advisor</h3>
       <p>A Spring AI <code>CallAdvisor</code> that gives each tenant a token budget and enforces it with reserve → call → commit. Over-budget calls are blocked before the model is called, concurrent calls can't overspend, and failed calls release their reservation.</p>
       <h4>Run locally</h4>
-<pre>mvn -q -pl pillar-finops-budget exec:java \
+<pre>mvn -q -pl pillar-finops-budget -am install -DskipTests
+mvn -q -pl pillar-finops-budget exec:java \
   -Dexec.mainClass=io.github.aaronsamuvel.blueprints.finops.FinOpsDemo</pre>
       <h4>Real result</h4>
 <pre>calls 1-11: ok
@@ -220,11 +225,19 @@ mvn -B -Pit -pl pillar-eval-gates -am verify   # live Ollama judge</pre>
     </article>
 
     <article class="card" id="part-2">
-      <span class="tag">part-2-github-gems · catalogue</span>
+      <span class="tag">part-2-github-gems · catalogue + CLI</span>
       <h3>Part II: GitHub gems</h3>
-      <p>A curated README of open-source Java AI repositories worth studying (Embabel, LangGraph4j, Spring AI sample apps, Arconia, privacy guardrails, multi-agent Spring AI and more), each mapped to the blueprint it relates to. Every link was checked against the GitHub API.</p>
+      <p>The handbook's open-source Java AI repositories (Embabel, LangGraph4j, Spring AI sample apps, Arconia, privacy guardrails, multi-agent Spring AI and more), kept as tested data: each entry records its licence and the blueprint to compare it with, and a live test checks every repository against the GitHub API.</p>
       <h4>Run locally</h4>
-<pre>Nothing to run: it is a reading list.</pre>
+<pre>mvn -B -pl part-2-github-gems -am spring-boot:run    # prints the catalogue
+mvn -B -Pit -pl part-2-github-gems verify            # live GitHub API check</pre>
+      <h4>Real result</h4>
+      <ul class="res">
+        <li>10 handbook entries, 11 repositories</li>
+        <li>9 Apache-2.0/MIT; <code>iunera/ypipe</code> and <code>rajeshkawali/Springboot-ai-playground</code>: no licence detected → study only</li>
+        <li>Live <code>GitHubCatalogueIT</code>: all 11 return 200 with the recorded licence</li>
+        <li><span class="ok">6 tests pass</span></li>
+      </ul>
       <div class="foot"><a href="https://github.com/aaron-samuvel/java-ai-blueprints/tree/main/part-2-github-gems">Open folder on GitHub →</a></div>
     </article>
   </div>
