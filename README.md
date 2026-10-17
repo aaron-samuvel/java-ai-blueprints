@@ -7,7 +7,7 @@ multi-module project. It has a folder per topic, with theory, runnable examples,
 a project and tests. Every module builds and tests **without Docker, cloud accounts or a live LLM**:
 tests use deterministic stub models from [`shared/`](shared). Live Ollama tests are opt-in (`-Pit`).
 
-> **Status:** foundation milestone. Part I, Blueprint 03 (modular RAG) and Blueprint 05 (PII advisor) are done; the rest are planned.
+> **Status:** foundation milestone. Part I, Blueprints 03 (modular RAG), 05 (PII advisor), 07 (guarded NL2SQL agent) and the FinOps budget pillar are done; the rest are planned.
 > See [docs/project-progress.md](docs/project-progress.md).
 
 ## Stack
@@ -18,6 +18,8 @@ tests use deterministic stub models from [`shared/`](shared). Live Ollama tests 
 | Spring Boot | 4.0.8 |
 | Spring AI | 2.0.1 |
 | Maven | 3.9.x |
+| JSqlParser | 5.4 (Blueprint 07) |
+| H2 | from the Boot BOM (offline DB for Blueprint 07) |
 | Local models (optional) | Ollama `llama3.2:3b`, `nomic-embed-text` |
 
 The reasons for these versions are in [docs/version-notes.md](docs/version-notes.md).
@@ -35,8 +37,8 @@ The reasons for these versions are in [docs/version-notes.md](docs/version-notes
 | [`blueprint-04-transactional-swarm/`](blueprint-04-transactional-swarm) | Blueprint 4 | planned |
 | [`blueprint-05-pii-tokenization-advisor/`](blueprint-05-pii-tokenization-advisor) | Blueprint 5 | **done** |
 | [`blueprint-06-mcp-mesh-model-switchboard/`](blueprint-06-mcp-mesh-model-switchboard) | Blueprint 6 | planned |
-| [`blueprint-07-a2a-nl2sql-agent/`](blueprint-07-a2a-nl2sql-agent) | Blueprint 7 | planned |
-| [`pillar-finops-budget/`](pillar-finops-budget) | Part IV: FinOps budget advisor | planned |
+| [`blueprint-07-a2a-nl2sql-agent/`](blueprint-07-a2a-nl2sql-agent) | Blueprint 7 | **done** |
+| [`pillar-finops-budget/`](pillar-finops-budget) | Part IV: FinOps budget advisor | **done** |
 | [`pillar-eval-gates/`](pillar-eval-gates) | Part IV: JUnit evaluation gates | planned |
 | [`AGENTS.md`](AGENTS.md) | Part IV: AGENTS.md constitution | done |
 | [`docs/`](docs) | Overview, mapping, architecture, setup, troubleshooting, glossary | done |

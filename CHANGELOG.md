@@ -13,8 +13,15 @@ versioning: [SemVer](https://semver.org/).
 - TOON subset encoder and `ToonVsJsonTokenMeasurementTest` (JTokkit cl100k/o200k). Measured: 38–39% fewer tokens
   than compact JSON on uniform tables, 16% on long-text chunks, 26–31% more on nested data.
 
+- `blueprint-07-a2a-nl2sql-agent/` (M3): JSqlParser 5.4 `SqlGuard` (single SELECT, table allow-list, LIMIT 500
+  added or capped), self-healing `Nl2SqlAgent` (1 + 3 attempts, error feedback), A2A-style agent card and task
+  endpoints, H2 schema with synthetic data.
+- `pillar-finops-budget/` (M3): `TokenBudgetLedger` (per-tenant reserve, commit, release; thread-safe),
+  `FinOpsBudgetAdvisor`, `TokenEstimator` (JTokkit + margin), `PriceList` (INR per 1K tokens), `FinOpsDemo`.
+
 ### Changed
 - Docs: README, mapping, version notes (TOON claim now measured), architecture and progress updated for M2.
+- Docs: README, mapping, architecture and progress updated for M3.
 
 ## [0.1.0] - 2026-10-17 (foundation milestone, not yet published)
 

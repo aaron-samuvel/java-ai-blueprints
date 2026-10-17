@@ -10,10 +10,14 @@ flowchart TB
   root --> p1[part-1-lifecycle]
   root --> b3[blueprint-03-modular-rag]
   root --> b5[blueprint-05-pii-tokenization-advisor]
+  root --> b7[blueprint-07-a2a-nl2sql-agent]
+  root --> fin[pillar-finops-budget]
   p1 --> shared
   b3 --> shared
   b5 --> shared
-  root -.planned.-> b1[blueprint-01] & b2[blueprint-02] & b4[blueprint-04] & b6[blueprint-06] & b7[blueprint-07] & fin[pillar-finops-budget] & ev[pillar-eval-gates]
+  b7 --> shared
+  fin --> shared
+  root -.planned.-> b1[blueprint-01] & b2[blueprint-02] & b4[blueprint-04] & b6[blueprint-06] & ev[pillar-eval-gates]
 ```
 
 ## Target runtime architecture (all blueprints)
