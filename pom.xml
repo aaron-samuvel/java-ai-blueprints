@@ -16,6 +16,7 @@
     <module>part-1-lifecycle</module>
     <module>blueprint-03-modular-rag</module>
     <module>blueprint-05-pii-tokenization-advisor</module>
+    <module>blueprint-07-a2a-nl2sql-agent</module>
     
     
   </modules>
