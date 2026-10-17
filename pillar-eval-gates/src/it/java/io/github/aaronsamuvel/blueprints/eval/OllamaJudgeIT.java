@@ -22,7 +22,7 @@ class OllamaJudgeIT {
                 .ollamaApi(OllamaApi.builder().baseUrl(base).build())
                 .options(OllamaChatOptions.builder().model(model).temperature(0.0).build())
                 .build();
-        EvaluationGate gate = new EvaluationGate(new VerdictNormalizingChatModel(judge));
+        EvaluationGate gate = new EvaluationGate(new VerdictNormalizingChatModel(judge), EvaluationGate.SMALL_JUDGE_RELEVANCY);
 
         GateReport golden = gate.run(EvaluationGate.load("golden-set.json"));
         System.out.println("live golden: " + golden.summary());
