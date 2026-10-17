@@ -1,0 +1,17 @@
+[
+  {"id":"refund-window","question":"How long do I have to request a refund?",
+   "context":["Customers can request a full refund within 30 days of delivery. Refunds are paid to the original payment method within 7 working days."],
+   "answer":"You can request a full refund within 30 days of delivery."},
+  {"id":"refund-payout","question":"When will my refund be paid?",
+   "context":["Customers can request a full refund within 30 days of delivery. Refunds are paid to the original payment method within 7 working days."],
+   "answer":"Refunds are paid to the original payment method within 7 working days."},
+  {"id":"damaged-item","question":"My item arrived damaged, what do I do?",
+   "context":["If an item arrives damaged, upload a photo within 48 hours and we ship a free replacement."],
+   "answer":"Upload a photo within 48 hours and we ship a free replacement."},
+  {"id":"annual-leave","question":"How many days of annual leave do employees get?",
+   "context":["Employees get 24 days of paid annual leave per calendar year. Up to 5 unused days carry over to the next year."],
+   "answer":"Employees get 24 days of paid annual leave per calendar year."},
+  {"id":"kafka-lag","question":"Consumer lag is above 10000, what should I check first?",
+   "context":["When consumer lag exceeds 10000 messages, first check whether the consumer group is rebalancing. Scale consumers up to the partition count, never beyond it."],
+   "answer":"First check whether the consumer group is rebalancing, then scale consumers up to the partition count."}
+]

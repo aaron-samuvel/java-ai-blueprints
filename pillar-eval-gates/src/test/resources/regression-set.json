@@ -1,0 +1,11 @@
+[
+  {"id":"wrong-number","question":"How long do I have to request a refund?",
+   "context":["Customers can request a full refund within 30 days of delivery."],
+   "answer":"You can request a full refund within 90 days of purchase."},
+  {"id":"invented-policy","question":"My item arrived damaged, what do I do?",
+   "context":["If an item arrives damaged, upload a photo within 48 hours and we ship a free replacement."],
+   "answer":"Call our hotline and a technician visits your home with a cash compensation voucher."},
+  {"id":"off-topic","question":"How many days of annual leave do employees get?",
+   "context":["Employees get 24 days of paid annual leave per calendar year."],
+   "answer":"Kubernetes pods restart automatically when liveness probes fail."}
+]
