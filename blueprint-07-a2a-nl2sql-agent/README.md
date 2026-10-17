@@ -73,6 +73,40 @@ mvn -pl blueprint-07-a2a-nl2sql-agent -am spring-boot:run      # port 8087, H2, 
 With the default echo stub, the "SQL" is just your question, so the guard rejects it. That shows
 the retry loop working. Use a real model (exercise 4) for meaningful SQL.
 
+## Handbook build: DataAgent and A2A mesh (`workflow/`, `dataagent/`, `mesh/`)
+Part III, Blueprint 7 (pp. 13–14). The first-cut agent above (`/a2a/tasks`, `SqlGuard`) still works.
+The handbook design sits next to it and runs offline with `DataAgentDemoModel`, a scripted SQL
+writer that makes the mistakes the loop has to repair.
+
+| Handbook requirement | Where | Status |
+|---|---|---|
+| `SequentialAgent`, `ParallelAgent`, `LoopAgent` with context compaction and a tool-call loop guard | `workflow/` (`WorkflowContext` with tool-call budget, `ContextCompactor` with chars/4 estimate and a pluggable summarizer, parallel branches on virtual threads with a timeout) | Done |
+| `SchemaVectorIndexer`: `DatabaseMetaData` tables, columns, FKs and enum samples into a vector store; only top-K tables in the prompt | `dataagent/SchemaVectorIndexer` (top-K plus FK neighbours so joins stay possible) on `SimpleVectorStore` with stub embeddings | Done (offline embeddings) |
+| `SqlAstGuardrailValidator`: JSqlParser, read-only SELECT, mandatory `tenant_id = :tenantId`, LIMIT ≤ 500 | `dataagent/SqlAstGuardrailValidator`. It also rejects CTEs, UNION, subqueries and any model-written `tenant_id` | Done |
+| `SelfHealingSqlLoopAgent`: read-only `JdbcClient`; error and explain plan fed back on a `DataAccessException` or an empty join; at most 3 retries | `dataagent/SelfHealingSqlLoopAgent`: EXPLAIN plus cost check (refuses a full scan of a table above `max-full-scan-rows`); execution in a read-only, rolled-back transaction | Done |
+| `ExecutiveInsightSynthesizer` → `DataAnalysisReport(naturalLanguageSummary, executedSql, rows, suggestedChart)` with `ChartSpecification` | `dataagent/ExecutiveInsightSynthesizer`. The summary is computed from the rows, not generated | Done |
+| Agent cards (intents, input/output schemas, SLA metrics) in Nacos / Spring Cloud Discovery | `mesh/MeshAgentCard`, `SlaTracker` (live p95 and success rate), `AgentRegistry` → `LocalAgentRegistry` (TTL heartbeat). The agent registers itself once its port is known | Substituted: an in-process registry behind an interface. Nacos is in the support compose file but not wired (no Nacos client in the build) |
+| A2A protocol between agents | `mesh/A2aJsonRpcController`: JSON-RPC 2.0 `message/send` → `Task` with a data artifact at `POST /a2a`, card at `/.well-known/agent-card.json` | Partial: only `message/send`, with no streaming, `tasks/get` or push notifications |
+| JManus-style coordination | `mesh/MeshCoordinator`: discover by intent, then a parallel A2A fan-out, `POST /api/v1/mesh/research` | Done (single-process demo; the HTTP calls are real) |
+| Testcontainers PostgreSQL tests: (a) multi-join aggregation (b) a column typo self-heals (c) DROP TABLE blocked before JDBC | `DataAgentApiTest` runs all three cases, plus an empty-join repair, a cross-tenant attempt and a time series, on **H2** | Partial: the scenarios are tested, but not on PostgreSQL. There is no Docker on the build box, and no Testcontainers PostgreSQL test was written |
+| Spring AI Alibaba | Not used | Substituted: the patterns are built on plain Spring AI 2.0.1 |
+
+Real numbers from the tests (tenant `acme`):
+- "top customers by revenue in Chennai" gives Asha Rao at 15,296 INR.
+- "revenue by product category" fails on the first try with `Column "P.CATEGRY" not found` and is repaired on the second, giving PERIPHERALS at 28,191 INR.
+- The prompt-injected `DROP TABLE` is rejected 4 times out of 4, and 0 JDBC calls are made.
+
+```bash
+curl -s localhost:8087/api/v1/data-agent/ask -H 'X-Tenant-Id: acme' -H 'Content-Type: application/json' \
+  -d '{"question":"What is the revenue by product category?"}'
+```
+
+Tests: 36 in total, all offline:
+- `DataAgentApiTest` (8);
+- `SqlAstGuardrailValidatorTest` (2, covering 13 hostile statements);
+- `WorkflowPrimitivesTest` (4);
+- the 22 earlier tests.
+
 ## Assumptions and limits *(author's design, not from handbook)*
 - **"A2A-style", not the official A2A SDK.** The agent card and task endpoints follow the A2A
   idea (discovery plus tasks), simplified to synchronous JSON. A full A2A mesh with several agents is planned.
