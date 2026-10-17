@@ -5,6 +5,19 @@ versioning: [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Added: free-alternative quick wins (17 Oct 2026)
+Matrix now: 119 requirements, 75 Done, 23 Partial, 16 Substituted, 5 Not done. `mvn -B -o clean verify`: 244 tests.
+- Blueprint 06: MCP resources (`ops://batch/jobs`, `ops://batch/executions/{executionId}`, `ops://jvm/heap`) and prompts
+  (`diagnose-failed-batch-job`, `jvm-health-review`) via `@McpResource` / `@McpPrompt` (`424f6de`).
+- FinOps: `RedisTokenBudgetLedger`, with Lua-atomic reserve/settle behind `TokenBudgetAuthority`; an offline fake-gateway test and a live
+  `RedisTokenBudgetLedgerIT` under `-Pit` against `localhost:6379` (`9053843`).
+- Deployment: one multi-stage `Dockerfile` and `docker-compose.apps.yml` for all seven apps (ports 8081-8087), with `docs/deployment.md`.
+  azd is documented as optional (`0cfa173`).
+- Blueprint 05: `PrivacyChatService` chains the FinOps budget advisor behind the PII advisor (`b36b197`).
+- Skipped to keep scope to quick wins, and left Not done with reasons: the GraalVM native profile, the LangChain4j `@AiService` example,
+  and the Docker MCP Catalog. Testcontainers ITs were also skipped; those rows keep their existing status.
+- Docs: matrix, README, site, handover, progress and environment updated (`c870219`).
+
 ### Added: handbook PDF conformance pass (17 Oct 2026)
 The repository was re-checked against both handbook PDFs. The full result is in `docs/pdf-requirements-mapping.md`:
 119 requirements, 73 Done, 23 Partial, 15 Substituted, 8 Not done.
