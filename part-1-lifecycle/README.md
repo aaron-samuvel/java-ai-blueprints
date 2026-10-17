@@ -41,7 +41,7 @@ IncidentTriage[severity=HIGH, service=checkout, summary=p95 latency over 2s, nex
 both tagged `openinference.span.kind=CHAIN`. The model, tool and vector-store names map to LLM, TOOL
 and RETRIEVER.
 
-To export the spans to the `otel-lgtm` service in `compose.yaml`, add Spring Boot's OpenTelemetry
+To export the spans to the `otel-lgtm` service in `docker-compose.ai-support.yml`, add Spring Boot's OpenTelemetry
 starter and set `management.opentelemetry.tracing.export.otlp.endpoint=http://localhost:4318/v1/traces`.
 That export path is **not run here** (no Docker on the build box), so Stage 6 is Partial in the
 [traceability matrix](../docs/pdf-requirements-mapping.md).

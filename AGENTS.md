@@ -43,7 +43,7 @@ repository (with LangGraph4j in Blueprint 02). Obey the following rules on every
   - (b) live integration tests (`*IT`, under `-Pit`) against Ollama and PGVector, using
     `RelevancyEvaluator` and `FactCheckingEvaluator` (`pillar-eval-gates`).
   Testcontainers and Arconia Dev Services are the handbook's choice. This repository uses env-configured
-  services from `compose.yaml` because the build box has no Docker.
+  services from `docker-compose.ai-support.yml` because the build box has no Docker.
 - Keep Micrometer/OpenTelemetry observations flowing through custom advisors, graph nodes and MCP tools.
   Pass an `ObservationRegistry` to `ChatClient.builder(...)` (see `part-1-lifecycle` `observability/`).
 

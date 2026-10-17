@@ -20,7 +20,7 @@ flowchart LR
 | # | Stage | What it means in practice | In this repo |
 |---|---|---|---|
 | 1 | Domain/intent modelling with records | Write the model's input and output as Java records first. The model has to fill a typed contract. | `IncidentTriage`, `StructuredOutputExample` |
-| 2 | Hermetic local prototyping with Dev Services | Run local infrastructure (Ollama, Postgres) with Testcontainers or Arconia Dev Services. No cloud. | Substituted: `compose.yaml` + env-configured services and the `-Pit` profile; stub models offline (no Docker on the build box, so no Arconia/Testcontainers) |
+| 2 | Hermetic local prototyping with Dev Services | Run local infrastructure (Ollama, Postgres) with Testcontainers or Arconia Dev Services. No cloud. | Substituted: `docker-compose.ai-support.yml` + env-configured services and the `-Pit` profile; stub models offline (no Docker on the build box, so no Arconia/Testcontainers) |
 | 3 | Context engineering & RAG ETL with TOON | Ingest, chunk, embed and retrieve. Serialise context compactly (TOON, Token-Oriented Object Notation). | Blueprint 03 (`ToonEncoder`); json-io TOON in `pillar-eval-gates` |
 | 4 | Dual-layer verification | Layer 1: deterministic tests with stub models. Layer 2: LLM-as-judge evaluators (relevancy, fact-checking). | stub tests in every module; `pillar-eval-gates` (FactChecking + Relevancy + 3 author's gates) |
 | 5 | Zero-trust guardrails with FinOps | Advisors that tokenise PII, enforce tool policies and reserve a token budget before each call. | Blueprint 05; `pillar-finops-budget` |
@@ -38,7 +38,7 @@ flowchart LR
 | Virtual threads | LLM calls block for seconds. Virtual threads make thread-per-request cheap, with no reactive code needed. | `VirtualThreadFanOut` |
 | Records as LLM contracts | Immutable, validated, and they map to a JSON schema for structured output | `IncidentTriage` |
 | Advisor API | Spring AI's interceptor chain around every model call: guardrails, memory, RAG, audit | `AuditTrailAdvisor`, `PrivacyProtectionCallAdvisor`, `FinOpsBudgetAdvisor` |
-| Testcontainers / Arconia | Real local Ollama and pgvector in tests and dev, started on demand | `compose.yaml` + `-Pit` ITs (substitute for Arconia/Testcontainers) |
+| Testcontainers / Arconia | Real local Ollama and pgvector in tests and dev, started on demand | `docker-compose.ai-support.yml` + `-Pit` ITs (substitute for Arconia/Testcontainers) |
 | Unified data & transactions | Vectors, chat memory and business rows in one Postgres, under one transaction | Blueprint 04 (stock + order + memory in one transaction), Blueprint 07 (tenant-scoped SQL) |
 
 ## Framework matrix
