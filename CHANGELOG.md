@@ -5,6 +5,15 @@ versioning: [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+Found by starting each packaged app on Windows and calling it over HTTP (2026-10-17):
+- `blueprint-03`: startup failed from the packaged jar with `no parser for ` because the corpus pattern also
+  matched jar directory entries; they are now skipped (regression test ingests from a real jar).
+- `blueprint-06`: the documented `BLUEPRINTS_DEV_JWT_SECRET` env var was never read (no `JwtDecoder`, app did not
+  start); it is now mapped in `application.properties` and the dev decoder turns on only for a non-blank secret.
+- `blueprint-02`: the review `history` lost repeated entries (`Channels.appender` drops duplicates); it now uses
+  `appenderWithDuplicate`.
+
 ### Added
 - `blueprint-03-modular-rag/` (M2): keyword query router with SMALLTALK, POLICY, TECHNICAL and GENERAL branches;
   domain-filtered `RoutingDocumentRetriever`; `RetrievalAugmentationAdvisor` with
