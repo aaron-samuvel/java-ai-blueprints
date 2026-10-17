@@ -2,6 +2,7 @@
 #
 #   docker compose -f docker-compose.apps.yml up --build -d
 #   apps listen on 8081-8087 (B03, B05, B06 also expose /actuator/health)
+#   host port taken? override per app, e.g.  B01_HOST_PORT=18081  (PowerShell: $env:B01_HOST_PORT=18081)
 #
 # Images are built from the one multi-stage Dockerfile (MODULE build arg). Apps that call a model
 # reach the host's Ollama through host.docker.internal; no API keys or paid services are needed.
@@ -15,46 +16,48 @@ x-app: &app
   environment:
     OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
     SPRING_AI_OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+    # Blueprint 06 dev JWT secret, passed through from your shell only (never put a value here)
+    BLUEPRINTS_DEV_JWT_SECRET: ${BLUEPRINTS_DEV_JWT_SECRET:-}
 
 services:
   b01:
     <<: *app
     build: { context: ., args: { MODULE: blueprint-01-goap-finops-incident-agent } }
     image: java-ai-blueprints/blueprint-01-goap-finops-incident-agent:local
-    ports: ["8081:8081"]
+    ports: ["${B01_HOST_PORT:-8081}:8081"]
 
   b02:
     <<: *app
     build: { context: ., args: { MODULE: blueprint-02-langgraph4j-hitl-evaluation } }
     image: java-ai-blueprints/blueprint-02-langgraph4j-hitl-evaluation:local
-    ports: ["8082:8082"]
+    ports: ["${B02_HOST_PORT:-8082}:8082"]
 
   b03:
     <<: *app
     build: { context: ., args: { MODULE: blueprint-03-modular-rag } }
     image: java-ai-blueprints/blueprint-03-modular-rag:local
-    ports: ["8083:8083"]
+    ports: ["${B03_HOST_PORT:-8083}:8083"]
 
   b04:
     <<: *app
     build: { context: ., args: { MODULE: blueprint-04-transactional-swarm } }
     image: java-ai-blueprints/blueprint-04-transactional-swarm:local
-    ports: ["8084:8084"]
+    ports: ["${B04_HOST_PORT:-8084}:8084"]
 
   b05:
     <<: *app
     build: { context: ., args: { MODULE: blueprint-05-pii-tokenization-advisor } }
     image: java-ai-blueprints/blueprint-05-pii-tokenization-advisor:local
-    ports: ["8085:8085"]
+    ports: ["${B05_HOST_PORT:-8085}:8085"]
 
   b06:
     <<: *app
     build: { context: ., args: { MODULE: blueprint-06-mcp-mesh-model-switchboard } }
     image: java-ai-blueprints/blueprint-06-mcp-mesh-model-switchboard:local
-    ports: ["8086:8086"]
+    ports: ["${B06_HOST_PORT:-8086}:8086"]
 
   b07:
     <<: *app
     build: { context: ., args: { MODULE: blueprint-07-a2a-nl2sql-agent } }
     image: java-ai-blueprints/blueprint-07-a2a-nl2sql-agent:local
-    ports: ["8087:8087"]
+    ports: ["${B07_HOST_PORT:-8087}:8087"]
