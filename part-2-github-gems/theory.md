@@ -1,7 +1,7 @@
 # Part II theory: learning from open-source Java AI repositories
 
-> The handbook's Part II lists ten repositories. Which repositories are listed comes from my reading notes on the
-> handbook. The study method below and the "compare with" mapping are **author's design (not from handbook)**.
+> The handbook's Part II table (pages 4-5) has ten rows naming fifteen repositories. The "compare with" folder for
+> each one is the blueprint whose handbook text cites it. The study method below is **author's design (not from handbook)**.
 
 ## Why study other repositories
 The blueprints in this repo are deliberately small and offline. Real projects show what happens next: how
@@ -30,20 +30,21 @@ study aid, not legal advice, so always open the actual LICENSE file.
 ## Mapping the gems to this repository
 `gems.csv` records, for each gem, the folder here it is most useful to compare with:
 
-| Gem | Compare with | Why |
+| Gem | Compare with | Why (handbook's "core innovation" column, paraphrased) |
 |---|---|---|
-| embabel/embabel-agent | Blueprint 01 | The GOAP agent framework the handbook points to; Blueprint 01 hand-rolls the same planning idea |
-| langgraph4j/langgraph4j | Blueprint 02 | The graph library Blueprint 02 uses directly |
-| JavaAIDev/agentic-patterns | Part I | Agentic workflow patterns with Spring AI, next to the lifecycle and pillar examples |
-| thomasvitale/llm-apps-java-spring-ai | Blueprint 03 | Spring AI sample apps, including RAG |
-| arconia-io/arconia | Part I | Dev Services for Spring Boot: the "hermetic local prototyping" stage |
-| ultramancode/spring-ai-privacy-guardrails | Blueprint 05 | Another take on PII tokenisation for Spring AI |
-| AzureCosmosDB/multi-agent-spring-ai | Blueprint 04 | Multi-agent orchestration with a shared store (Cosmos DB instead of SQL) |
-| iunera/ypipe | Blueprint 06 | Bundles local inference with pre-configured MCP servers |
-| alibaba/spring-ai-alibaba | Blueprint 02 | Graph-based agents on Spring AI |
-| piomin/spring-ai-showcase, rajeshkawali/Springboot-ai-playground | — | Broad feature tours; useful across all modules |
+| embabel/embabel-agent, embabel/java-agent-template | Blueprint 01 | GOAP planning separated from LLM calls; `FakeOperationContext` tests |
+| langgraph4j/langgraph4j, ykpraveen/langchain4j-sample | Blueprint 02 | Stateful cyclic graphs, reducers, HITL pause/resume |
+| JavaAIDev/agentic-patterns | Blueprint 04 | Chain, parallel, routing, orchestrator-workers, evaluator-optimizer |
+| thomasvitale/llm-apps-java-spring-ai | Blueprint 03 | Modular, branching, conditional RAG |
+| arconia-io/arconia | Part I | Dev Services and OpenInference: the "hermetic local prototyping" and observability stages |
+| ultramancode/spring-ai-privacy-guardrails | Blueprint 05 | Request-scoped PII tokenisation and least-privilege tools |
+| AzureCosmosDB/multi-agent-spring-ai | Blueprint 04 | Swarm handoffs, vector search and ACID tools in one app |
+| piomin/spring-ai-showcase, iunera/ypipe | Blueprint 06 | Multi-provider switching, structured-output validation, local switchboard plus MCP |
+| alibaba/spring-ai-alibaba, rainerWJY/JManus | Blueprint 07 | A2A mesh, graph runtime, NL2SQL DataAgent |
+| anmiralles/springboot-ai-rag-docingest | Blueprint 03 | Asynchronous document ingestion |
+| rajeshkawali/Springboot-ai-playground | — | Spring AI vs LangChain4j comparison; useful across all modules |
 
-The "why" column is based on each repository's own GitHub description, checked on 17 Oct 2026.
+The links, licences and languages were checked against the GitHub API on 17 Oct 2026.
 
 ## Keeping a catalogue honest
 Links rot and licences change. The catalogue is data (`gems.csv`), and two kinds of test keep it honest:

@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Live check (needs internet, runs only with {@code -Pit}): every catalogued repository still exists on GitHub
  * and still reports the licence recorded in {@code gems.csv}. Uses the public API without a token
- * (60 requests per hour per IP is enough for 11 repositories).
+ * (60 requests per hour per IP is enough for 15 repositories).
  */
 class GitHubCatalogueIT {
 

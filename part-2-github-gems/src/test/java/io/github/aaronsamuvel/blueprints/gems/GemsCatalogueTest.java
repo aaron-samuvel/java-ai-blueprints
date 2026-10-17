@@ -23,7 +23,7 @@ class GemsCatalogueTest {
     @Test
     void coversTheTenHandbookEntries() {
         assertThat(catalogue.handbookEntries()).isEqualTo(10);
-        assertThat(catalogue.gems()).hasSize(11); // entry 4 is split into 4a and 4b
+        assertThat(catalogue.gems()).hasSize(15); // rows 1, 2, 4, 9 and 10 name two repositories each
     }
 
     @Test
@@ -53,7 +53,8 @@ class GemsCatalogueTest {
         assertThat(ReuseAdvice.forLicence("NOASSERTION")).isEqualTo(ReuseAdvice.READ_ONLY);
         assertThat(ReuseAdvice.forLicence("Some-Custom-1.0")).isEqualTo(ReuseAdvice.READ_ONLY);
         assertThat(catalogue.gems().stream().filter(g -> g.reuseAdvice() == ReuseAdvice.READ_ONLY).map(Gem::slug))
-                .containsExactlyInAnyOrder("iunera/ypipe", "rajeshkawali/Springboot-ai-playground");
+                .containsExactlyInAnyOrder("iunera/ypipe", "rajeshkawali/Springboot-ai-playground",
+                        "ykpraveen/langchain4j-sample", "anmiralles/springboot-ai-rag-docingest");
     }
 
     @Test
@@ -71,9 +72,11 @@ class GemsCatalogueTest {
     @Test
     void markdownTableHasOneRowPerRepositoryAndFindsRelatedGems() {
         String md = catalogue.toMarkdown();
-        assertThat(md.lines().filter(l -> l.startsWith("| ") && l.contains("https://github.com/"))).hasSize(11);
+        assertThat(md.lines().filter(l -> l.startsWith("| ") && l.contains("https://github.com/"))).hasSize(15);
         assertThat(md).contains("| 8 | [iunera/ypipe](https://github.com/iunera/ypipe) | none | no licence detected");
         assertThat(catalogue.relatedTo("blueprint-02-langgraph4j-hitl-evaluation")).extracting(Gem::slug)
-                .containsExactly("langgraph4j/langgraph4j", "alibaba/spring-ai-alibaba");
+                .containsExactly("langgraph4j/langgraph4j", "ykpraveen/langchain4j-sample");
+        assertThat(catalogue.relatedTo("blueprint-07-a2a-nl2sql-agent")).extracting(Gem::slug)
+                .containsExactly("alibaba/spring-ai-alibaba", "rainerWJY/JManus");
     }
 }

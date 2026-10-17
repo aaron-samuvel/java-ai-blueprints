@@ -50,7 +50,7 @@ public final class GemsCatalogue {
         return gems;
     }
 
-    /** Number of distinct handbook entries (4a and 4b count once). */
+    /** Number of distinct handbook entries (1a and 1b, 4a and 4b, ... count once). */
     public int handbookEntries() {
         return (int) gems.stream().map(Gem::handbookEntry).distinct().count();
     }

@@ -7,7 +7,7 @@ java -jar part-2-github-gems/target/part-2-github-gems-0.1.0-SNAPSHOT.jar
 ```
 Output (first rows, recorded on the build box on 17 Oct 2026):
 ```
-Part II: 10 handbook entries, 11 repositories (licences as reported by GitHub on 2026-10-17)
+Part II: 10 handbook entries, 15 repositories (licences as reported by GitHub on 2026-10-17)
 
 | # | Repository | Licence | Reuse | Compare with |
 |---|---|---|---|---|

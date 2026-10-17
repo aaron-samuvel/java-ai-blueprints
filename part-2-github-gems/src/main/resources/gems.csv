@@ -1,14 +1,19 @@
 # Part II catalogue. Columns: number,slug,licence,language,related
-# number: handbook position (4a/4b share #4). licence/language: SPDX id and primary language reported by the
-# GitHub API on 2026-10-17 ("none" = no licence detected). related: repo folder this gem is compared with, or "-".
-1,embabel/embabel-agent,Apache-2.0,Kotlin,blueprint-01-goap-finops-incident-agent
-2,langgraph4j/langgraph4j,MIT,Java,blueprint-02-langgraph4j-hitl-evaluation
-3,JavaAIDev/agentic-patterns,Apache-2.0,Java,part-1-lifecycle
+# number: handbook row (1-10). Rows that name two repositories are split into a and b (1, 2, 4, 9, 10).
+# licence/language: SPDX id and primary language reported by the GitHub API on 2026-10-17 ("none" = no licence detected).
+# related: repo folder this gem is compared with (the blueprint whose handbook text cites it), or "-".
+1a,embabel/embabel-agent,Apache-2.0,Kotlin,blueprint-01-goap-finops-incident-agent
+1b,embabel/java-agent-template,Apache-2.0,Java,blueprint-01-goap-finops-incident-agent
+2a,langgraph4j/langgraph4j,MIT,Java,blueprint-02-langgraph4j-hitl-evaluation
+2b,ykpraveen/langchain4j-sample,none,Java,blueprint-02-langgraph4j-hitl-evaluation
+3,JavaAIDev/agentic-patterns,Apache-2.0,Java,blueprint-04-transactional-swarm
 4a,thomasvitale/llm-apps-java-spring-ai,Apache-2.0,Java,blueprint-03-modular-rag
 4b,arconia-io/arconia,Apache-2.0,Java,part-1-lifecycle
 5,ultramancode/spring-ai-privacy-guardrails,Apache-2.0,Java,blueprint-05-pii-tokenization-advisor
 6,AzureCosmosDB/multi-agent-spring-ai,MIT,Java,blueprint-04-transactional-swarm
-7,piomin/spring-ai-showcase,MIT,Java,-
+7,piomin/spring-ai-showcase,MIT,Java,blueprint-06-mcp-mesh-model-switchboard
 8,iunera/ypipe,none,PowerShell,blueprint-06-mcp-mesh-model-switchboard
-9,alibaba/spring-ai-alibaba,Apache-2.0,Java,blueprint-02-langgraph4j-hitl-evaluation
-10,rajeshkawali/Springboot-ai-playground,none,Java,-
+9a,alibaba/spring-ai-alibaba,Apache-2.0,Java,blueprint-07-a2a-nl2sql-agent
+9b,rainerWJY/JManus,Apache-2.0,Java,blueprint-07-a2a-nl2sql-agent
+10a,rajeshkawali/Springboot-ai-playground,none,Java,-
+10b,anmiralles/springboot-ai-rag-docingest,none,Java,blueprint-03-modular-rag
