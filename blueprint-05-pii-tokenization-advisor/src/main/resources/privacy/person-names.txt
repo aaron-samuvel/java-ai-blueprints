@@ -1,0 +1,27 @@
+# Gazetteer for the OpenNLP DictionaryNameFinder (synthetic demo list; extend or replace with a model).
+Priya Sharma
+Rahul Verma
+Ravi Kumar
+Anita Desai
+Arjun Mehta
+Kavya Iyer
+Sanjay Gupta
+Neha Kapoor
+John Smith
+Maria Garcia
+Aaron Paul
+Priya
+Rahul
+Ravi
+Anita
+Arjun
+Kavya
+Sanjay
+Neha
+Sharma
+Verma
+Kumar
+Mehta
+Iyer
+Gupta
+Kapoor

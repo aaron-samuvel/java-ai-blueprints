@@ -1,0 +1,13 @@
+# Gazetteer for the OpenNLP DictionaryNameFinder (cities used in the demo).
+Chennai
+Mumbai
+Bengaluru
+Bangalore
+New Delhi
+Delhi
+Hyderabad
+Kolkata
+Pune
+London
+Frankfurt
+New York
