@@ -23,7 +23,8 @@ public class VerdictNormalizingChatModel implements ChatModel {
 
     @Override
     public ChatResponse call(Prompt prompt) {
-        ChatResponse raw = delegate.call(prompt);
+        // Pass only the messages: the judge keeps its own configured options (model, temperature).
+        ChatResponse raw = delegate.call(new Prompt(prompt.getInstructions()));
         String text = raw.getResult() == null ? "" : raw.getResult().getOutput().getText();
         return new ChatResponse(java.util.List.of(new Generation(new AssistantMessage(normalize(text)))), raw.getMetadata());
     }
