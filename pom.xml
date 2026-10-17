@@ -19,6 +19,7 @@
     <module>blueprint-07-a2a-nl2sql-agent</module>
     <module>pillar-finops-budget</module>
     <module>pillar-eval-gates</module>
+    <module>blueprint-02-langgraph4j-hitl-evaluation</module>
     
     
   </modules>
