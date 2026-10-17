@@ -23,6 +23,8 @@ import org.springframework.util.StringUtils;
  * OAuth2 resource server. Every request needs a valid JWT:
  * <ul>
  *   <li>{@code /mcp/**} (the MCP endpoint) requires scope {@code mcp.tools};</li>
+ *   <li>{@code /api/ops/**} (runtime OpenAPI bridge admin) requires scope {@code mcp.admin};</li>
+ *   <li>{@code /actuator/health/**} is public (status only, for probes);</li>
  *   <li>{@code /api/switchboard/**} requires scope {@code models.use}; premium models also need {@code models.premium}.</li>
  * </ul>
  * Token validation is configured in one of two ways:
@@ -41,7 +43,9 @@ public class SecurityConfiguration {
                 .csrf(c -> c.disable())
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(a -> a
+                        .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
                         .requestMatchers("/mcp/**", "/mcp").hasAuthority("SCOPE_mcp.tools")
+                        .requestMatchers("/api/ops/**").hasAuthority("SCOPE_mcp.admin")
                         .requestMatchers("/api/switchboard/**").hasAuthority("SCOPE_models.use")
                         .anyRequest().denyAll())
                 .oauth2ResourceServer(o -> o.jwt(Customizer.withDefaults()))
