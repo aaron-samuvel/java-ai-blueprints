@@ -31,12 +31,27 @@ public class OpsServerConfiguration {
     }
 
     @Bean
-    ToolCallbackProvider opsTools(JobRepository repository, JobOperator operator, JfrEventMonitor jfr, @Lazy HealthEndpoint health,
+    BatchIntrospectionMcpTools batchIntrospectionMcpTools(JobRepository repository, JobOperator operator,
                                   @Value("${blueprints.ops.batch.restartable-jobs:" + LedgerReconciliationJobConfiguration.JOB + "}") List<String> restartable,
                                   @Value("${blueprints.ops.batch.max-restarts:3}") int maxRestarts) {
-        return MethodToolCallbackProvider.builder().toolObjects(
-                new BatchIntrospectionMcpTools(repository, operator, new HashSet<>(restartable), maxRestarts, 12),
-                new JvmDiagnosticsMcpTools(jfr, health)).build();
+        return new BatchIntrospectionMcpTools(repository, operator, new HashSet<>(restartable), maxRestarts, 12);
+    }
+
+    @Bean
+    JvmDiagnosticsMcpTools jvmDiagnosticsMcpTools(JfrEventMonitor jfr, @Lazy HealthEndpoint health) {
+        return new JvmDiagnosticsMcpTools(jfr, health);
+    }
+
+    @Bean
+    ToolCallbackProvider opsTools(BatchIntrospectionMcpTools batch, JvmDiagnosticsMcpTools jvm) {
+        return MethodToolCallbackProvider.builder().toolObjects(batch, jvm).build();
+    }
+
+    /** Resources and prompts; Spring AI's MCP annotation scanner publishes this bean's annotated methods. */
+    @Bean
+    OpsMcpResourcesAndPrompts opsMcpResourcesAndPrompts(BatchIntrospectionMcpTools batch, JvmDiagnosticsMcpTools jvm,
+                                  @Value("${blueprints.ops.batch.restartable-jobs:" + LedgerReconciliationJobConfiguration.JOB + "}") List<String> restartable) {
+        return new OpsMcpResourcesAndPrompts(batch, jvm, restartable);
     }
 
     @Bean

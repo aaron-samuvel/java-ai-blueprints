@@ -169,6 +169,37 @@ class OpsNodeTest {
     }
 
     @Test
+    void resourcesAndPromptsAreServedNextToTheTools() throws Exception {
+        feed.markBroken(true);
+        var failed = jobOperator.start(ledgerReconciliationJob, new JobParametersBuilder().addString("businessDate", "2026-10-15").toJobParameters());
+        feed.markBroken(false);
+        long id = failed.getId();
+        HttpClientStreamableHttpTransport transport = HttpClientStreamableHttpTransport.builder(base())
+                .httpRequestCustomizer((b, m, u, body, ctx) -> b.header("Authorization", "Bearer " + TestJwts.token("mcp.tools"))).build();
+        McpSyncClient client = McpClient.sync(transport).requestTimeout(Duration.ofSeconds(10)).build();
+        try {
+            McpSchema.InitializeResult init = client.initialize();
+            assertThat(init.capabilities().resources()).isNotNull();
+            assertThat(init.capabilities().prompts()).isNotNull();
+
+            assertThat(client.listResources().resources()).extracting(McpSchema.Resource::uri).contains("ops://batch/jobs", "ops://jvm/heap");
+            assertThat(client.listResourceTemplates().resourceTemplates()).extracting(McpSchema.ResourceTemplate::uriTemplate)
+                    .contains("ops://batch/executions/{executionId}");
+            String jobs = ((McpSchema.TextResourceContents) client.readResource(new McpSchema.ReadResourceRequest("ops://batch/jobs")).contents().get(0)).text();
+            assertThat(jobs).contains("restart allow-list: [ledgerReconciliationJob]").contains("execution " + id);
+            String exec = ((McpSchema.TextResourceContents) client.readResource(new McpSchema.ReadResourceRequest("ops://batch/executions/" + id)).contents().get(0)).text();
+            assertThat(exec).contains("step reconcile FAILED").contains("HTTP 503");
+
+            assertThat(client.listPrompts().prompts()).extracting(McpSchema.Prompt::name).contains("diagnose-failed-batch-job", "jvm-health-review");
+            McpSchema.GetPromptResult prompt = client.getPrompt(new McpSchema.GetPromptRequest("diagnose-failed-batch-job", Map.of("executionId", String.valueOf(id))));
+            String text = ((McpSchema.TextContent) prompt.messages().get(0).content()).text();
+            assertThat(text).contains("Execution " + id + " failed").contains("HTTP 503").contains("dryRun=true");
+        } finally {
+            client.closeGracefully();
+        }
+    }
+
+    @Test
     void healthIsPublicAndTheRouterApiNeedsAToken() {
         RestClient http = RestClient.create(base());
         assertThat(http.get().uri("/actuator/health").retrieve().body(String.class)).contains("UP");
