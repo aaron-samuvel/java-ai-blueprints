@@ -10,6 +10,7 @@ import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 
 /**
  * RAG ETL: extract (parser chosen by file type), transform (domain metadata from the folder
@@ -41,14 +42,27 @@ public class IngestionService {
 
     /** Ingest every file under {@code classpath:corpus/<domain>/}. Returns the number of chunks. */
     public int ingestClasspathCorpus() {
+        return ingestClasspathCorpus(new PathMatchingResourcePatternResolver());
+    }
+
+    /**
+     * Same as {@link #ingestClasspathCorpus()} with an explicit resolver (tests use one backed by a jar).
+     * Inside a packaged jar the pattern also matches directory entries such as {@code corpus/policy/},
+     * which have no file name; those are skipped.
+     */
+    public int ingestClasspathCorpus(ResourcePatternResolver resolver) {
         try {
-            Resource[] files = new PathMatchingResourcePatternResolver().getResources("classpath*:corpus/*/*");
+            Resource[] files = resolver.getResources("classpath*:corpus/*/*");
             List<Document> all = new ArrayList<>();
             for (Resource r : files) {
                 String path = r.getURL().getPath();
+                String filename = r.getFilename();
+                if (filename == null || filename.isBlank() || path.endsWith("/")) {
+                    continue; // a directory entry, not a document
+                }
                 String[] parts = path.split("/");
                 String domain = parts[parts.length - 2];
-                all.addAll(toDocuments(domain, r.getFilename(), r.getContentAsString(StandardCharsets.UTF_8)));
+                all.addAll(toDocuments(domain, filename, r.getContentAsString(StandardCharsets.UTF_8)));
             }
             vectorStore.add(all);
             return all.size();
