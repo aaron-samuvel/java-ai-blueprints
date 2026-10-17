@@ -6,6 +6,8 @@
 | `spring-boot-dependencies` | 4.1.1 (4.2.0 at M2) | **4.0.8** |
 | `spring-ai-bom` | 2.0.1 (2.1.0 at M1) | **2.0.1** |
 | JDK | Temurin 21.0.12.1 | **21** |
+| `jsqlparser` | 5.4 | **5.4** |
+| `langgraph4j-core` | 1.9.5 (Java 17 bytecode, works on 21) | **1.9.5** |
 | Maven | 3.9.16 | 3.9.x |
 
 ### Compatibility check

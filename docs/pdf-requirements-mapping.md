@@ -15,7 +15,7 @@ Status: **done** = implemented and tested · **catalogue** = documentation only,
 | J-AIDLC stage 1: domain/intent modelling with records | `part-1-lifecycle` `IncidentTriage`, `StructuredOutputExample` | done |
 | Stage 2: hermetic local prototyping with Dev Services | `shared/` stubs; `-Pit` profile; `docs/setup.md` | done (stubs), ITs partial |
 | Stage 3: context engineering & RAG ETL with TOON | `blueprint-03-modular-rag` (`IngestionService`, `ToonEncoder`) | done |
-| Stage 4: dual-layer verification | stub-model tests; `pillar-eval-gates` | layer 1 done; layer 2 planned |
+| Stage 4: dual-layer verification | stub-model tests; `pillar-eval-gates` | done |
 | Stage 5: zero-trust guardrails with FinOps | `blueprint-05-…`; `pillar-finops-budget`; `SqlGuard` (B07) | done |
 | Stage 6: semantic observability with OpenInference | `part-1-lifecycle/theory.md` | theory only; planned |
 | Stage 7: virtual threads & GraalVM native | `VirtualThreadFanOut`, `spring.threads.virtual.enabled` | virtual threads done; native planned |
@@ -23,7 +23,7 @@ Status: **done** = implemented and tested · **catalogue** = documentation only,
 | Pillar: records as LLM contracts | `part-1-lifecycle` `IncidentTriage` | done |
 | Pillar: Advisor API | `AuditTrailAdvisor`, `PiiTokenizationAdvisor` | done |
 | Pillar: Testcontainers / Arconia | `-Pit` profile, `OllamaPiiIT` | partial (Ollama IT; Testcontainers planned) |
-| Pillar: unified data & transactions | `blueprint-04-transactional-swarm` | planned |
+| Pillar: unified data & transactions | `blueprint-04-transactional-swarm` | done |
 | Framework matrix: Spring AI 2.0, LangChain4j, Embabel, LangGraph4j, Spring AI Alibaba | `part-1-lifecycle/theory.md` | done |
 
 ## Part II: GitHub repositories (10)
@@ -46,9 +46,9 @@ Status: **done** = implemented and tested · **catalogue** = documentation only,
 | # | Handbook blueprint | Folder | Status |
 |---|---|---|---|
 | 1 | GOAP/OODA FinOps incident agent (Embabel) | `blueprint-01-goap-finops-incident-agent` | planned |
-| 2 | LangGraph4j HITL multi-agent evaluation | `blueprint-02-langgraph4j-hitl-evaluation` | planned |
+| 2 | LangGraph4j HITL multi-agent evaluation | `blueprint-02-langgraph4j-hitl-evaluation` | **done** (7 tests; LangGraph4j 1.9.5) |
 | 3 | Modular, branching, conditional RAG (Docling, PGVector) | `blueprint-03-modular-rag` | **done** (20 tests + 1 pgvector IT; Docling stubbed) |
-| 4 | Multi-agent transactional swarm, tenant-partitioned ChatMemory | `blueprint-04-transactional-swarm` | planned |
+| 4 | Multi-agent transactional swarm, tenant-partitioned ChatMemory | `blueprint-04-transactional-swarm` | **done** (8 tests; H2, @Transactional rollback) |
 | 5 | Zero-trust PII tokenisation advisor with @ToolPrivacyPolicy | `blueprint-05-pii-tokenization-advisor` | **done** (18 tests + 1 IT) |
 | 6 | MCP server mesh + model switchboard (OAuth2) | `blueprint-06-mcp-mesh-model-switchboard` | planned |
 | 7 | A2A mesh + self-healing NL2SQL (JSqlParser guard, LIMIT 500, 3 retries) | `blueprint-07-a2a-nl2sql-agent` | **done** (22 tests): guard, LIMIT 500, 1+3 attempts on H2; A2A-style single agent (multi-agent mesh planned) |
@@ -58,6 +58,6 @@ Status: **done** = implemented and tested · **catalogue** = documentation only,
 | Handbook item | Folder | Status |
 |---|---|---|
 | FinOps reserve-call-commit budget advisor | `pillar-finops-budget` | **done** (10 tests) |
-| JUnit evaluation gates (RelevancyEvaluator, FactCheckingEvaluator) | `pillar-eval-gates` | planned |
+| JUnit evaluation gates (RelevancyEvaluator, FactCheckingEvaluator) | `pillar-eval-gates` | **done** (12 tests + Ollama judge IT) |
 | TOON | `blueprint-03-modular-rag` `toon/`, `ToonVsJsonTokenMeasurementTest` | done: measured 38–39% vs compact JSON on uniform tables, 16% on text chunks, −26 to −31% on nested data |
 | AGENTS.md constitution | `/AGENTS.md` | done (wording is author's design) |

@@ -60,5 +60,6 @@ mvn -pl blueprint-02-langgraph4j-hitl-evaluation -am spring-boot:run   # port 80
 - `MemorySaver` keeps checkpoints in memory and **drops a thread's checkpoints once the graph
   reaches END** (we saw this in testing). `ReviewWorkflow` therefore keeps the final state of finished
   reviews itself. Use a persistent checkpoint saver and a table in production.
-- With the default echo stub, the drafter repeats the question, so the evaluator fails it and it
+- With the default echo stub, the drafter just repeats the question, so the drafts aren't meaningful.
+  Depending on how many words overlap with the context, the evaluator may fail them, and the review then
   escalates to a human after 2 revisions. Plug in Ollama for real drafts.

@@ -19,7 +19,15 @@ versioning: [SemVer](https://semver.org/).
 - `pillar-finops-budget/` (M3): `TokenBudgetLedger` (per-tenant reserve, commit, release; thread-safe),
   `FinOpsBudgetAdvisor`, `TokenEstimator` (JTokkit + margin), `PriceList` (INR per 1K tokens), `FinOpsDemo`.
 
+- `pillar-eval-gates/` (M4): `EvaluationGate` over Spring AI `RelevancyEvaluator` + `FactCheckingEvaluator`,
+  deterministic `LexicalJudgeChatModel`, golden and regression sets, Ollama judge IT under `-Pit`.
+- `blueprint-02-langgraph4j-hitl-evaluation/` (M4): LangGraph4j 1.9.5 drafter, evaluator and human-review graph with
+  `MemorySaver` checkpoints, `interruptBefore` and resume, and a REST review API.
+- `blueprint-04-transactional-swarm/` (M4): triage, refund and notify agents in one `@Transactional` boundary;
+  tenant-partitioned `ChatMemoryRepository` on H2; outbox table; rollback and isolation tests.
+
 ### Changed
+- Docs: README, mapping, architecture and progress updated for M4.
 - Docs: README, mapping, version notes (TOON claim now measured), architecture and progress updated for M2.
 - Docs: README, mapping, architecture and progress updated for M3.
 
