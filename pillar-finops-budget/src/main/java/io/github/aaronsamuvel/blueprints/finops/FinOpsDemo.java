@@ -13,7 +13,7 @@ public final class FinOpsDemo {
         TokenBudgetLedger ledger = new TokenBudgetLedger(300);
         FinOpsBudgetAdvisor advisor = new FinOpsBudgetAdvisor(ledger, new TokenEstimator(), 50, PriceList.FREE);
         ChatClient client = ChatClient.builder(StubChatModel.echo()).defaultAdvisors(advisor).build();
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= 20; i++) {
             try {
                 client.prompt().user("Summarise ticket " + i + " about a delayed refund").call().content();
                 System.out.println("call " + i + " ok   " + ledger.snapshot("default"));

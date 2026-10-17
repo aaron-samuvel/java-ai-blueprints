@@ -56,7 +56,8 @@ sequenceDiagram
 ## Run
 ```bash
 mvn -B -pl pillar-finops-budget -am verify
-mvn -q -pl pillar-finops-budget -am compile exec:java -Dexec.mainClass=io.github.aaronsamuvel.blueprints.finops.FinOpsDemo
+mvn -q -pl pillar-finops-budget -am install -DskipTests
+mvn -q -pl pillar-finops-budget exec:java -Dexec.mainClass=io.github.aaronsamuvel.blueprints.finops.FinOpsDemo
 ```
 
 ## Assumptions *(author's design, not from handbook)*

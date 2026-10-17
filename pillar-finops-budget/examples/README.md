@@ -21,3 +21,10 @@ finops.records();          // per-call UsageRecord audit trail
 ## Runnable demo
 `FinOpsDemo` (in `src/main`) gives a tenant a 300-token budget and makes calls until one is blocked.
 Run it from your IDE, or with the `exec:java` command in the module README.
+
+Actual output from a run on the build box (17 Oct 2026), last lines:
+```
+call 10 ok   Snapshot[tenant=default, limit=300, reserved=0, used=220]
+call 11 ok   Snapshot[tenant=default, limit=300, reserved=0, used=242]
+call 12 BLOCKED: token budget exceeded for tenant 'default': requested 62, available 58
+```
