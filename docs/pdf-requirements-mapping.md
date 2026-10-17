@@ -15,7 +15,7 @@ Page numbers are the PDF page footers. "B1" to "B7" are the Part III blueprints.
 Nothing here is marked Done on the strength of a run that did not happen. Live (`-Pit`) runs are named
 explicitly where they took place.
 
-**Counts (119 requirements):** Done 73 · Partial 23 · Substituted 15 · Not done 8
+**Counts (119 requirements):** Done 75 · Partial 23 · Substituted 16 · Not done 5
 
 Most Partial and Substituted rows have the same three causes:
 - there is no Docker on the build box, so no Testcontainers, Arconia, Presidio, Nacos or LGTM;
@@ -38,12 +38,12 @@ Module READMEs have the detailed per-module tables. [environment.md](environment
 | I 1.2, p.3 | Stage 3: Docling or Tika ingestion, summary and keyword enrichment, `RetrievalAugmentationAdvisor` | B03 `DocumentIngestionService` (Tika/PDFBox), `SummaryMetadataEnricher`, `KeywordMetadataEnricher` | **Done**: Tika is one of the two options named |
 | I 1.2, p.3 | Stage 3: json-io TOON cuts tokens by 40-50% | `pillar-eval-gates` `ToonContextSerializer` (json-io 4.117.0); B03 `ToonEncoder` | **Partial**: implemented and measured. Flat tables saved 32% (json-io) and 38-39% (B03) against compact JSON; nested objects saved nothing (json-io +1.8%, B03 +26-31%). The 40-50% figure holds only against pretty-printed JSON |
 | I 1.2, p.3 | Stage 4: deterministic mock layer (FakeOperationContext) plus `RelevancyEvaluator` / `FactCheckingEvaluator` gates | stub-model tests in every module; B01 `LlmInvocation` records; `pillar-eval-gates` | **Done**: FakeOperationContext itself is Embabel's (see B01 substitution) |
-| I 1.2, p.3 | Stage 5: PII tokenisation and token-budget advisors on every ChatClient, failing closed | B05 advisor (fails closed without a session); `FinOpsBudgetAdvisor` (throws before the call) | **Partial**: the offline demo modules that only talk to stub models do not all wire both advisors |
+| I 1.2, p.3 | Stage 5: PII tokenisation and token-budget advisors on every ChatClient, failing closed | B05 advisor (fails closed without a session); `FinOpsBudgetAdvisor` (throws before the call) | **Partial**: B05 `PrivacyChatService` now chains both (PII, then FinOps). The other demos do not: the PII advisor lives inside the B05 app module |
 | I 1.2, p.4 | Stage 6: Micrometer/OTel with OpenInference conventions, exported to Phoenix or Tempo | part-1 `observability/` (`OpenInferenceObservationFilter`, `ObservabilityTest`); B02 node observations; B03 `rag.vector.search` timer | **Partial**: observations and span kinds are tested in-process; OTLP export to LGTM or Phoenix was not run |
 | I 1.2, p.4 | Stage 7: virtual threads, HTTP timeouts and circuit breakers | virtual threads everywhere; B06 switchboard timeout fallback | **Partial**: timeouts yes; no circuit-breaker library |
-| I 1.2, p.4 | Stage 7: GraalVM native images for MCP servers and edge agents | — | **Not done**: there is no GraalVM on the build box, and native builds were not attempted |
+| I 1.2, p.4 | Stage 7: GraalVM native images for MCP servers and edge agents | — | **Not done**: skipped to keep scope to quick wins (user's call); there is no GraalVM on the build box |
 | I 1.3, p.4 | Framework matrix: Spring AI 2.0 (`ChatClient`, advisors, vector stores, MCP, `@Tool`/`@McpTool`) | all modules (Spring AI 2.0.1, Boot 4.0.8) | **Done**: `@Tool` is used; `@McpTool` is not (see B06) |
-| I 1.3, p.4 | Framework matrix: LangChain4j `@AiService` | — | **Not done**: Spring AI covers every blueprint here. The handbook presents LangChain4j as an alternative layer |
+| I 1.3, p.4 | Framework matrix: LangChain4j `@AiService` | — | **Not done**: skipped to keep scope to quick wins (user's call); Spring AI covers every blueprint, and LangChain4j on Boot 4.0.8 was not attempted |
 | I 1.3, p.4 | Framework matrix: Embabel `@Agent` / `@Action` / `@Goal` / `@Condition` | B01 `platform/` (own annotations with the same names) | **Substituted**: Embabel 1.5.3 needs Spring Boot 4.1.1; this repository is pinned to 4.0.8 |
 | I 1.3, p.4 | Framework matrix: LangGraph4j `StateGraph`, reducers, checkpoints, HITL, hooks | B02 | **Done** |
 | I 1.3, p.4 | Framework matrix: Spring AI Alibaba (ReactAgent, Nacos A2A, Sequential/Parallel/LoopAgent) | B07 `workflow/`, `mesh/` on plain Spring AI | **Substituted**: Spring AI Alibaba is not on Spring AI 2.0.1; the patterns are built by hand |
@@ -137,12 +137,12 @@ Module READMEs have the detailed per-module tables. [environment.md](environment
 | B6, p.13 | `JvmDiagnosticsMcpTools`: heap, GC, virtual-thread pinning (JFR), health | `ops/JvmDiagnosticsMcpTools`, `JfrEventMonitor` | **Done** |
 | B6, p.13 | `DynamicOpenApiMcpBridge` with tool-list change notifications | `ops/DynamicOpenApiMcpBridge` | **Done**: GET operations only |
 | B6, p.13 | `@McpTool` annotations | Spring AI `@Tool` | **Substituted**: `@Tool` is one of the two options the handbook lists |
-| B6, p.13 | MCP resources and prompt templates | — | **Not done**: only tools are exposed |
+| B6, p.13 | MCP resources and prompt templates | `ops/OpsMcpResourcesAndPrompts` (`@McpResource` ops://batch/jobs, ops://batch/executions/{executionId}, ops://jvm/heap; `@McpPrompt` diagnose-failed-batch-job, jvm-health-review) | **Done**: `OpsNodeTest` lists and reads them through a real MCP client (commit 424f6de) |
 | B6, p.14 | Separate `mcp-ops-server` and `ai-switchboard-host` modules | one module with `MCP_TOOLSET=ops` and `host/` | **Substituted**: one deployable plays both roles, which keeps the build small |
 | B6, p.14 | `ModelSwitchboardRouter` by complexity, privacy and latency | `host/ModelSwitchboardRouter` | **Partial**: stub models only; no live Ollama or hosted model (paid keys) |
 | B6, p.14 | `StructuredOutputValidationAdvisor` with retry | `ModelSwitchboardRouter.extract` | **Done** |
 | B6, p.14 | Tests: discovery, OAuth2 rejection, cloud-timeout fallback | `SecuredNodeTest`, `OpsNodeTest`, `ModelSwitchboardRouterTest` | **Done** |
-| B6, p.13 | Docker MCP Catalog servers | — | **Not done**: no Docker Desktop |
+| B6, p.13 | Docker MCP Catalog servers | — | **Not done**: skipped (user's call): needs Docker Desktop on the user's PC |
 
 ## Part III, Blueprint 7: A2A mesh & self-healing NL2SQL (pp. 14-15)
 
@@ -164,17 +164,17 @@ Module READMEs have the detailed per-module tables. [environment.md](environment
 | PDF section / page | Requirement | Repo location | Status |
 |---|---|---|---|
 | IV 10.1, p.16 | High-priority `CallAdvisor` doing Reserve → Call → Commit/Release | `pillar-finops-budget` `FinOpsBudgetAdvisor` | **Done** |
-| IV 10.1, p.16 | Atomic reservation in Redis/PostgreSQL, daily/monthly budget, `BudgetExceededException` before the HTTP call | `JdbcTokenBudgetLedger` (conditional `UPDATE`, daily periods), `TokenBudgetLedger` | **Done**: tested on H2 (32 concurrent reservations, exactly 10 granted); not run on a live PostgreSQL |
+| IV 10.1, p.16 | Atomic reservation in Redis/PostgreSQL, daily/monthly budget, `BudgetExceededException` before the HTTP call | `JdbcTokenBudgetLedger` (conditional `UPDATE`, daily periods), `RedisTokenBudgetLedger` (Lua), `TokenBudgetLedger` | **Done**: tested on H2 and on an in-memory Redis fake (32 concurrent reservations, exactly 10 granted); not run on a live PostgreSQL or Redis here |
 | IV 10.1, p.16 | Commit exact `Usage` from `ChatResponse` metadata; release on failure | `FinOpsBudgetAdvisor` | **Done** |
 | IV 10.1, p.16 | Cost in micro-dollars | `PriceList` (INR per 1K tokens) | **Substituted**: the user is in India |
-| IV 10.1, p.16 | Redis store or a Cycles authority service | `TokenBudgetAuthority` interface | **Not done**: no Redis or Cycles server on the build box |
+| IV 10.1, p.16 | Redis store or a Cycles authority service | `redis/RedisTokenBudgetLedger` + `SpringDataRedisBudgetGateway` (Lua reserve/settle, reservation TTL) behind `TokenBudgetAuthority` | **Done**: Redis, not Cycles. Offline test on a fake gateway; the Lua scripts run in `RedisTokenBudgetLedgerIT` (`-Pit`, localhost:6379), not run on the box (no Redis) |
 | IV 10.2, p.16 | Groundedness gate (`FactCheckingEvaluator`) | `pillar-eval-gates` `EvaluationGate`, `FiveGateSuiteTest` | **Done** |
 | IV 10.2, p.16 | Relevance gate (`RelevancyEvaluator`) | same | **Done** |
 | IV 10.2, p.16 | Judge model through Testcontainers Ollama in CI | `LexicalJudgeChatModel` in CI; `OllamaJudgeIT` under `-Pit` | **Substituted**: no Docker in CI or on the box, so a deterministic judge is used |
 | Cover, p.1 | "5 LLM evaluator gates" (the body names only 2) | `gates/StructuredOutputEvaluator`, `PiiLeakEvaluator`, `AnswerTokenBudgetEvaluator`, `GateSuite` | **Substituted**: gates 3-5 are author's design, because the handbook does not name them |
 | IV 10.2, p.16 | json-io TOON serialisation | `toon/ToonContextSerializer` | **Partial**: measured savings were lower than the handbook's 40-50% (see Stage 3); cyclic references not tested |
 | IV 10.3, pp.16-17 | `AGENTS.md` and `CLAUDE.md` at the repository root | `AGENTS.md` (the 4 handbook sections plus repo rules), `CLAUDE.md` (imports it) | **Done** |
-| IV 10.3, p.17 | Constitution rule: every ChatClient wires the PII and FinOps advisors | see Stage 5 | **Partial**: the stub-only demo modules are not all compliant yet |
+| IV 10.3, p.17 | Constitution rule: every ChatClient wires the PII and FinOps advisors | see Stage 5 | **Partial**: only B05 wires both; the other demo modules are not compliant yet |
 | IV 10.4, pp.17-18 | Summary matrix of blueprints and reference repositories | README module table; `gems.csv` | **Done** |
 
 ## Companion guide: Pre-Installation & Supporting Environment Flow (10 pp.); details in environment.md
@@ -192,7 +192,7 @@ Module READMEs have the detailed per-module tables. [environment.md](environment
 | Guide II, p.4 | `CREATE EXTENSION vector / hstore / uuid-ossp` | `infra/postgres/init.sql`; preflight | **Done** |
 | Guide II 2.2, p.4 | Variables matrix (OpenAI, Anthropic, Mistral, DashScope, Pinecone/Stock, Azure) | `.env.template` | **Done**: placeholders only; no secrets committed |
 | Guide III, pp.5-8 | Per-blueprint pre-installation flows (reference repositories) | `docs/environment.md`, Part III table | **Partial**: this repository implements its own blueprints; the reference repositories were not cloned or run |
-| Guide III B4, p.6 | `az login`, `azd up` (Route A) | — | **Not done**: needs an Azure subscription (paid) |
+| Guide III B4, p.6 | `az login`, `azd up` (Route A) | `Dockerfile` + `docker-compose.apps.yml` (all seven apps, ports 8081-8087), `docs/deployment.md` | **Substituted**: free local deployment instead of Azure (paid; azd documented as optional). The images were not built here (no Docker on the box) |
 | Guide IV 1, p.8 | `scripts/preflight-check.sh` (versions, Ollama, ports, pgvector) | `scripts/preflight-check.sh`, `.ps1` | **Done**: run on the box: 0 failed, 8 warnings |
 | Guide IV 2, p.8 | `docker-compose.ai-support.yml` + `.env.template`, healthchecks, named volumes | same | **Partial**: Nacos and LGTM have no compose healthcheck; the preflight script checks them |
 | Guide IV 3, p.8 | `SupportingEnvironmentHealthIndicator` at `/actuator/health/aiEnvironment` with a console table | `shared/.../env/` | **Done** |

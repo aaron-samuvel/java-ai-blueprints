@@ -60,11 +60,11 @@ blueprint-02 7, blueprint-04 8). `-Pit` test sources compile (including `OllamaJ
 
 ## M11 PDF conformance verification (17 Oct 2026, IST)
 - Both PDFs (the 18-page master handbook and the 10-page environment guide) were read and traced requirement by requirement
-  in `docs/pdf-requirements-mapping.md`: **73 Done, 23 Partial, 15 Substituted, 8 Not done** (119).
+  in `docs/pdf-requirements-mapping.md`: **75 Done, 23 Partial, 16 Substituted, 5 Not done** (119).
 - Commits: env `82814e7`; B01 `ceb4eda`; B02 `db6312c`; B03 `113bb80`; B04 `76f4fa5`; B05 `b8a20e7`; B06 `6569bfa`;
   B07 `7daa75c`; FinOps JDBC ledger `4c302df`; five gates and TOON `af591ba`; Part I observability, AGENTS.md and
   CLAUDE.md `5b74092`; Part II 15 repositories `ae4c2d6`, `0404eaf`; environment doc `6266f8e`; docs, site and matrix (this release).
-- `mvn -B -o clean verify` on the build box: **BUILD SUCCESS, 13 reactor projects, 240 tests, 0 failures, 0 errors, 0 skipped**
+- `mvn -B -o clean verify` on the build box: **BUILD SUCCESS, 13 reactor projects, 244 tests, 0 failures, 0 errors, 0 skipped**
   (shared 5, part-1 6, part-2 6, B01 20, B02 25, B03 35, B04 21, B05 32, B06 22, B07 36, finops 13, eval-gates 19).
 - `GitHubCatalogueIT` (`-Pit`) re-run on the build box: all 15 repositories returned 200 with the recorded licence.
 - `scripts/preflight-check.sh` on the build box: 0 failed, 8 warnings (no Docker, Ollama or backing services).

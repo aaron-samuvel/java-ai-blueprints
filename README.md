@@ -14,8 +14,8 @@ a project and tests. Every module builds and tests **without Docker, cloud accou
 tests use deterministic stub models from [`shared/`](shared). Live Ollama tests are opt-in (`-Pit`).
 
 > **Status:** all modules are built and tested against both handbook PDFs. The [traceability matrix](docs/pdf-requirements-mapping.md)
-> lists 119 requirements: **73 Done, 23 Partial, 15 Substituted, 8 Not done**, each with its page and reason.
-> `mvn -B clean verify` runs 240 offline tests across 13 Maven projects (BUILD SUCCESS on the build box, 17 Oct 2026),
+> lists 119 requirements: **75 Done, 23 Partial, 16 Substituted, 5 Not done**, each with its page and reason.
+> `mvn -B clean verify` runs 244 offline tests across 13 Maven projects (BUILD SUCCESS on the build box, 17 Oct 2026),
 > and CI runs them on every push. An earlier full `mvn -B -Pit clean verify` (123 unit + 3 live tests against pgvector
 > and Ollama) passed on Windows. See [`docs/handover.md`](docs/handover.md) and [docs/project-progress.md](docs/project-progress.md).
 

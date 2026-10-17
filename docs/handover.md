@@ -1,6 +1,6 @@
 # Handover
 
-This is the state on 17 Oct 2026 (IST), after the live run, the run-each-app pass, the Pages site, the audit and the conformance pass against both handbook PDFs. Every module is implemented. Each handbook requirement has a page reference and a status in [`pdf-requirements-mapping.md`](pdf-requirements-mapping.md): 119 requirements, 73 Done, 23 Partial, 15 Substituted and 8 Not done. Anything the PDFs do not specify is labelled *author's design (not from handbook)* in the module docs.
+This is the state on 17 Oct 2026 (IST), after the live run, the run-each-app pass, the Pages site, the audit and the conformance pass against both handbook PDFs. Every module is implemented. Each handbook requirement has a page reference and a status in [`pdf-requirements-mapping.md`](pdf-requirements-mapping.md): 119 requirements, 75 Done, 23 Partial, 16 Substituted and 5 Not done. Anything the PDFs do not specify is labelled *author's design (not from handbook)* in the module docs.
 
 ## 1. Prerequisites on the Windows PC
 * JDK 21 (Temurin) and Maven 3.9+ on `PATH`. See [`setup.md`](setup.md).
@@ -35,7 +35,7 @@ Ports default to 808N and can be changed with `$env:PORT`.
 The exact requests and expected output for each module are in its README.
 
 ## 4. What has been verified, and what hasn't
-* ✅ `mvn -B -o clean verify` on the Linux build box (17 Oct 2026, after the PDF conformance pass): **BUILD SUCCESS, 13 reactor projects, 240 tests, 0 failures, 0 errors, 0 skipped**.
+* ✅ `mvn -B -o clean verify` on the Linux build box (17 Oct 2026, after the PDF conformance pass): **BUILD SUCCESS, 13 reactor projects, 244 tests, 0 failures, 0 errors, 0 skipped**.
 * ✅ The same offline build runs in GitHub Actions (`.github/workflows/ci.yml`) on every push and pull request, together with a relative-link check (`scripts/check-links.py`).
 * ✅ `mvn -B -Pit clean verify` on the owner's Windows PC: BUILD SUCCESS with 123 unit tests and the 3 live tests (details below). That run predates the audit's new tests.
 * ✅ Each app was packaged, started on Windows and called over HTTP (results on the [showcase site](https://aaron-samuvel.github.io/java-ai-blueprints/)). That pass found 3 bugs, fixed in `f0a9ebe`, `ee06b5e` and `ee419d4`.

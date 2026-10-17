@@ -33,7 +33,7 @@ and for running the apps against real services.
 | Layer 4: Presidio Analyzer on :5002 | Partial | A compose service and `PresidioPiiAnalyzer` (Blueprint 05) are provided. The client is tested only against a stub HTTP server and fails closed |
 | Layer 4: OpenNLP | Partial | Blueprint 05 uses OpenNLP 2.5.6 dictionary NER, and loads `en-ner-*.bin` models from `OPENNLP_PERSON_MODEL` / `OPENNLP_LOCATION_MODEL` if they are set. The binaries are not bundled |
 | Layer 4: Nacos 2.4+ | Substituted | A compose service is provided, but Blueprint 07 uses an in-process `LocalAgentRegistry` behind the `AgentRegistry` interface, so the build needs no registry |
-| Layer 4: Azure CLI / azd | Not done | It needs an Azure subscription (paid, and a new account connection). Blueprint 04 follows the guide's "Route B, local fallback" |
+| Layer 4: Azure CLI / azd | Substituted | Free local deployment instead: `Dockerfile` + `docker-compose.apps.yml` runs all seven apps ([deployment.md](deployment.md)). azd stays optional: it needs an Azure subscription (even the free tier asks for a credit card) |
 | **Layer 5**: Grafana otel-lgtm (:3000, 4317, 4318) | Partial | A compose service and the `OTEL_EXPORTER_OTLP_ENDPOINT` variable are provided. `part-1-lifecycle` tests the Micrometer observations and the OpenInference span kinds. Export to LGTM was not run |
 | Layer 5: Arize Phoenix | Not done | There is no Phoenix service. The OpenInference attributes are what Phoenix would read |
 | Layer 5: master pre-flight provisioning prompt | Done | See the Part IV rows below |
