@@ -20,6 +20,7 @@
     <module>pillar-finops-budget</module>
     <module>pillar-eval-gates</module>
     <module>blueprint-02-langgraph4j-hitl-evaluation</module>
+    <module>blueprint-04-transactional-swarm</module>
     
     
   </modules>
