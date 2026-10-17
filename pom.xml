@@ -14,7 +14,7 @@
   <modules>
     <module>shared</module>
     <module>part-1-lifecycle</module>
-
+    <module>blueprint-05-pii-tokenization-advisor</module>
     
     
   </modules>
