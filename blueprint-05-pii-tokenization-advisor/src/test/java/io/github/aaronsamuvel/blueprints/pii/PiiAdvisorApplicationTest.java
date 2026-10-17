@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
 
+import io.github.aaronsamuvel.blueprints.finops.FinOpsBudgetAdvisor;
+import io.github.aaronsamuvel.blueprints.finops.TokenBudgetLedger;
 import io.github.aaronsamuvel.blueprints.shared.StubChatModel;
 
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,12 @@ class PiiAdvisorApplicationTest {
     @Autowired
     Environment env;
 
+    @Autowired
+    FinOpsBudgetAdvisor budget;
+
+    @Autowired
+    TokenBudgetLedger ledger;
+
     @Test
     void httpChatEndpointProtectsPiiEndToEnd() {
         String email = "rahul.v@example.org";
@@ -35,5 +43,9 @@ class PiiAdvisorApplicationTest {
 
         assertThat(body.get("answer")).isEqualTo("echo: Update my email to " + email);
         assertThat(model.allSentText()).doesNotContain(email).contains("<<EMAIL_1>>");
+        // the FinOps advisor ran in the same chain: reservation settled, usage recorded
+        assertThat(budget.records()).isNotEmpty();
+        assertThat(ledger.snapshot("default").reserved()).isZero();
+        assertThat(ledger.snapshot("default").used()).isPositive();
     }
 }

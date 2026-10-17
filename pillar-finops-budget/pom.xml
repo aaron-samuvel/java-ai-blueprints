@@ -15,8 +15,8 @@
     <dependency><groupId>org.springframework.ai</groupId><artifactId>spring-ai-client-chat</artifactId></dependency>
     <dependency><groupId>com.knuddels</groupId><artifactId>jtokkit</artifactId><version>1.1.0</version><!-- same version Spring AI 2.0.1 uses --></dependency>
     <dependency><groupId>org.springframework</groupId><artifactId>spring-jdbc</artifactId></dependency>
-    <dependency><groupId>org.springframework.data</groupId><artifactId>spring-data-redis</artifactId><!-- Redis budget store (Lua reserve) --></dependency>
-    <dependency><groupId>io.lettuce</groupId><artifactId>lettuce-core</artifactId></dependency>
+    <dependency><groupId>org.springframework.data</groupId><artifactId>spring-data-redis</artifactId><optional>true</optional><!-- Redis budget store (Lua reserve); consumers opt in --></dependency>
+    <dependency><groupId>io.lettuce</groupId><artifactId>lettuce-core</artifactId><optional>true</optional></dependency>
     <dependency><groupId>com.h2database</groupId><artifactId>h2</artifactId><scope>test</scope></dependency>
     <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-test</artifactId><scope>test</scope></dependency>
   </dependencies>

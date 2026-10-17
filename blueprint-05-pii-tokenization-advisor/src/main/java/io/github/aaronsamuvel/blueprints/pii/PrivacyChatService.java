@@ -1,5 +1,6 @@
 package io.github.aaronsamuvel.blueprints.pii;
 
+import io.github.aaronsamuvel.blueprints.finops.FinOpsBudgetAdvisor;
 import io.github.aaronsamuvel.blueprints.pii.advisor.PiiTokenizationAdvisor;
 import io.github.aaronsamuvel.blueprints.pii.core.PiiTokenizer;
 import io.github.aaronsamuvel.blueprints.pii.core.TokenVault;
@@ -10,7 +11,11 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.stereotype.Service;
 
-/** Chat entry point: every call goes through the PII advisor and privacy-enforced tools. */
+/**
+ * Chat entry point: every call goes through the PII advisor (order HIGHEST_PRECEDENCE) and then the
+ * FinOps budget advisor (HIGHEST_PRECEDENCE + 10), so the budget is reserved on the tokenized prompt
+ * before the model is called; tools are privacy-enforced.
+ */
 @Service
 public class PrivacyChatService {
 
@@ -18,13 +23,13 @@ public class PrivacyChatService {
     private final PiiTokenizer tokenizer;
     private final CustomerTools tools;
 
-    public PrivacyChatService(ChatModel chatModel, PiiTokenizer tokenizer, CustomerTools tools) {
+    public PrivacyChatService(ChatModel chatModel, PiiTokenizer tokenizer, CustomerTools tools, FinOpsBudgetAdvisor budget) {
         this.tokenizer = tokenizer;
         this.tools = tools;
         this.chatClient = ChatClient.builder(chatModel)
                 .defaultSystem("You are a helpful support assistant. Values like <<EMAIL_1>> are "
                         + "placeholders for personal data; repeat them verbatim, never guess them.")
-                .defaultAdvisors(new PiiTokenizationAdvisor(tokenizer))
+                .defaultAdvisors(new PiiTokenizationAdvisor(tokenizer), budget)
                 .build();
     }
 

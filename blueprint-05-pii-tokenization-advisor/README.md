@@ -34,6 +34,7 @@ sequenceDiagram
 | [exercises.md](exercises.md) | Practice tasks |
 | `src/main/.../core` | `PiiType` (email, PAN, card+Luhn, Aadhaar, Indian phone), `TokenVault`, `PiiTokenizer` |
 | `src/main/.../advisor/PiiTokenizationAdvisor.java` | The zero-trust advisor |
+| `src/main/.../FinOpsConfiguration.java` | Wires `pillar-finops-budget`'s `FinOpsBudgetAdvisor` behind the PII advisor in `PrivacyChatService`, so the budget is reserved on the tokenized prompt (`blueprint.finops.tenant-token-limit`, default 200000) |
 | `src/main/.../tools` | `@ToolPrivacyPolicy`, `PrivacyEnforcingToolCallback`, demo `CustomerTools` |
 | `src/main/.../web/ChatController.java` | `POST /api/chat` |
 | `src/test/...` | 18 offline tests (see below) |
