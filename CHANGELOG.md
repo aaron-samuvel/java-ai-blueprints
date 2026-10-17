@@ -5,6 +5,18 @@ versioning: [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Verified: second live run on Windows (17 Oct 2026, ~21:53 IST)
+- `mvn -B -Pit clean verify` on the owner's PC at `219fd99`: BUILD SUCCESS, 244 unit + 6 live tests. `OllamaJudgeIT` golden 80%/80%,
+  regressions 0%/0% (all 3 caught); `PgVectorRagIT`, `RedisTokenBudgetLedgerIT` (real Redis: 32 concurrent reservations, exactly 10
+  granted), `OllamaPiiIT` and `GitHubCatalogueIT` pass. Details in `docs/handover.md`.
+- `docker-compose.apps.yml` verified on the PC: all seven images built and every app answered its README request.
+
+### Fixed
+- Blueprint 03: `IngestionServiceTest` failed on Windows because the JDK `jar:` URL cache held `corpus.jar` open, so `@TempDir`
+  could not delete it. The test disables that cache while it runs (`b27b9cf`).
+- Deployment: host ports in `docker-compose.apps.yml` can be overridden with `B0N_HOST_PORT` (8081 is often taken), and
+  `BLUEPRINTS_DEV_JWT_SECRET` is passed through to Blueprint 06, which could not issue usable tokens without it (`219fd99`).
+
 ### Added: free-alternative quick wins (17 Oct 2026)
 Matrix now: 119 requirements, 75 Done, 23 Partial, 16 Substituted, 5 Not done. `mvn -B -o clean verify`: 244 tests.
 - Blueprint 06: MCP resources (`ops://batch/jobs`, `ops://batch/executions/{executionId}`, `ops://jvm/heap`) and prompts

@@ -52,7 +52,7 @@ Module READMEs have the detailed per-module tables. [environment.md](environment
 
 | PDF section / page | Requirement | Repo location | Status |
 |---|---|---|---|
-| II table, pp.4-5 | 10 rows naming 15 repositories, each with a link | `part-2-github-gems/gems.csv` (1a-10b), README table | **Done**: all 15 returned HTTP 200 from the GitHub API on 17 Oct 2026 (`GitHubCatalogueIT`, `-Pit`) |
+| II table, pp.4-5 | 10 rows naming 15 repositories, each with a link | `part-2-github-gems/gems.csv` (1a-10b), README table | **Done**: all 15 returned HTTP 200 from the GitHub API on 17 Oct 2026 (`GitHubCatalogueIT`, `-Pit`, on the build box and again on the owner's PC) |
 | II table, pp.4-5 | Each gem's innovation is mapped to a blueprint | `gems.csv` "related" column, `theory.md` mapping | **Done**: the mapping follows the blueprint whose text cites the repository |
 | II table, p.5 | Owner of `springboot-ai-rag-docingest` (the table gives none) | `anmiralles/springboot-ai-rag-docingest` | **Done**: the owner is taken from Blueprint 3's reference line (p.9) |
 
@@ -164,10 +164,10 @@ Module READMEs have the detailed per-module tables. [environment.md](environment
 | PDF section / page | Requirement | Repo location | Status |
 |---|---|---|---|
 | IV 10.1, p.16 | High-priority `CallAdvisor` doing Reserve → Call → Commit/Release | `pillar-finops-budget` `FinOpsBudgetAdvisor` | **Done** |
-| IV 10.1, p.16 | Atomic reservation in Redis/PostgreSQL, daily/monthly budget, `BudgetExceededException` before the HTTP call | `JdbcTokenBudgetLedger` (conditional `UPDATE`, daily periods), `RedisTokenBudgetLedger` (Lua), `TokenBudgetLedger` | **Done**: tested on H2 and on an in-memory Redis fake (32 concurrent reservations, exactly 10 granted); not run on a live PostgreSQL or Redis here |
+| IV 10.1, p.16 | Atomic reservation in Redis/PostgreSQL, daily/monthly budget, `BudgetExceededException` before the HTTP call | `JdbcTokenBudgetLedger` (conditional `UPDATE`, daily periods), `RedisTokenBudgetLedger` (Lua), `TokenBudgetLedger` | **Done**: tested on H2 and on an in-memory Redis fake (32 concurrent reservations, exactly 10 granted). Live Redis: `RedisTokenBudgetLedgerIT` passed on the owner's PC on 17 Oct 2026 against the `ai-redis` container (32 concurrent reservations of 100 against 1,000, exactly 10 granted, 1,000 reserved). Not run on a live PostgreSQL |
 | IV 10.1, p.16 | Commit exact `Usage` from `ChatResponse` metadata; release on failure | `FinOpsBudgetAdvisor` | **Done** |
 | IV 10.1, p.16 | Cost in micro-dollars | `PriceList` (INR per 1K tokens) | **Substituted**: the user is in India |
-| IV 10.1, p.16 | Redis store or a Cycles authority service | `redis/RedisTokenBudgetLedger` + `SpringDataRedisBudgetGateway` (Lua reserve/settle, reservation TTL) behind `TokenBudgetAuthority` | **Done**: Redis, not Cycles. Offline test on a fake gateway; the Lua scripts run in `RedisTokenBudgetLedgerIT` (`-Pit`, localhost:6379), not run on the box (no Redis) |
+| IV 10.1, p.16 | Redis store or a Cycles authority service | `redis/RedisTokenBudgetLedger` + `SpringDataRedisBudgetGateway` (Lua reserve/settle, reservation TTL) behind `TokenBudgetAuthority` | **Done**: Redis, not Cycles. Offline test on a fake gateway; the Lua scripts passed in `RedisTokenBudgetLedgerIT` (`-Pit`) against a real Redis on the owner's PC (17 Oct 2026, 2 of 2 tests) |
 | IV 10.2, p.16 | Groundedness gate (`FactCheckingEvaluator`) | `pillar-eval-gates` `EvaluationGate`, `FiveGateSuiteTest` | **Done** |
 | IV 10.2, p.16 | Relevance gate (`RelevancyEvaluator`) | same | **Done** |
 | IV 10.2, p.16 | Judge model through Testcontainers Ollama in CI | `LexicalJudgeChatModel` in CI; `OllamaJudgeIT` under `-Pit` | **Substituted**: no Docker in CI or on the box, so a deterministic judge is used |
@@ -192,7 +192,7 @@ Module READMEs have the detailed per-module tables. [environment.md](environment
 | Guide II, p.4 | `CREATE EXTENSION vector / hstore / uuid-ossp` | `infra/postgres/init.sql`; preflight | **Done** |
 | Guide II 2.2, p.4 | Variables matrix (OpenAI, Anthropic, Mistral, DashScope, Pinecone/Stock, Azure) | `.env.template` | **Done**: placeholders only; no secrets committed |
 | Guide III, pp.5-8 | Per-blueprint pre-installation flows (reference repositories) | `docs/environment.md`, Part III table | **Partial**: this repository implements its own blueprints; the reference repositories were not cloned or run |
-| Guide III B4, p.6 | `az login`, `azd up` (Route A) | `Dockerfile` + `docker-compose.apps.yml` (all seven apps, ports 8081-8087), `docs/deployment.md` | **Substituted**: free local deployment instead of Azure (paid; azd documented as optional). The images were not built here (no Docker on the box) |
+| Guide III B4, p.6 | `az login`, `azd up` (Route A) | `Dockerfile` + `docker-compose.apps.yml` (all seven apps, ports 8081-8087), `docs/deployment.md` | **Substituted**: free local deployment instead of Azure (paid; azd documented as optional). Verified on the owner's PC on 17 Oct 2026: all seven images built, all seven containers started and answered their README requests (B01 on host port 18081 via `B01_HOST_PORT`, because 8081 was taken) |
 | Guide IV 1, p.8 | `scripts/preflight-check.sh` (versions, Ollama, ports, pgvector) | `scripts/preflight-check.sh`, `.ps1` | **Done**: run on the box: 0 failed, 8 warnings |
 | Guide IV 2, p.8 | `docker-compose.ai-support.yml` + `.env.template`, healthchecks, named volumes | same | **Partial**: Nacos and LGTM have no compose healthcheck; the preflight script checks them |
 | Guide IV 3, p.8 | `SupportingEnvironmentHealthIndicator` at `/actuator/health/aiEnvironment` with a console table | `shared/.../env/` | **Done** |

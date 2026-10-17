@@ -35,7 +35,7 @@
     <div class="stat"><div class="n">0</div><div class="l">cloud accounts needed to build</div></div>
   </div>
 
-  <p>Full build on Windows: <code>mvn -B -Pit clean verify</code> → <span class="ok">BUILD SUCCESS</span> (123 unit + 3 live tests at the time; the offline suite has since grown to 240 tests, which pass on the build box and in CI). Without <code>-Pit</code>, <code>mvn -B verify</code> needs no Docker, cloud account or LLM, and <a href="https://github.com/aaron-samuvel/java-ai-blueprints/actions/workflows/ci.yml">CI</a> runs it on every push and pull request.</p>
+  <p>Full build on Windows: <code>mvn -B -Pit clean verify</code> → <span class="ok">BUILD SUCCESS</span> (latest run, 17 Oct 2026: 244 unit tests + 6 live tests against real pgvector, Redis, Ollama and the GitHub API; the same 244 offline tests pass on the build box and in CI). All seven apps were also built and run with <code>docker compose -f docker-compose.apps.yml up --build -d</code>. Without <code>-Pit</code>, <code>mvn -B verify</code> needs no Docker, cloud account or LLM, and <a href="https://github.com/aaron-samuvel/java-ai-blueprints/actions/workflows/ci.yml">CI</a> runs it on every push and pull request.</p>
 
   <h2 class="section" id="coverage">Handbook coverage</h2>
   <p>Every requirement in the two handbook PDFs (the 18-page master handbook and the 10-page environment guide) is listed with its page and status in the <a href="https://github.com/aaron-samuvel/java-ai-blueprints/blob/main/docs/pdf-requirements-mapping.md">traceability matrix</a>.</p>

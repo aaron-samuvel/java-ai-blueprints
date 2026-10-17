@@ -42,7 +42,9 @@ The exact requests and expected output for each module are in its README.
 * ✅ The audit re-ran every app with `mvn -pl <app> -am spring-boot:run` on the build box (stub models) and found the `-am` run bug, fixed in `d32b529`.
 * ✅ `GitHubCatalogueIT` (Part II, live GitHub API) passed on the build box: 15 repositories, HTTP 200, licences as recorded.
 * ✅ The traceability matrix was built from both PDFs directly (18-page handbook, 10-page environment guide).
-* ❌ The handbook packages added in the conformance pass were not run on Windows or with live models. They are covered by offline tests only.
+* ✅ Second live run on the owner's Windows PC (17 Oct 2026, ~21:53 IST, commit `219fd99`): `mvn -B -Pit clean verify` → **BUILD SUCCESS, 13 reactor projects, 244 unit tests + 6 live tests in 5 IT classes, 0 failures** (details below). It found one Windows-only test bug, fixed in `b27b9cf`.
+* ✅ `docker compose -f docker-compose.apps.yml up --build -d` on the owner's PC: all seven images built and all seven apps answered their README requests (see [`deployment.md`](deployment.md)).
+* ❌ Live models were exercised only by the three Ollama/pgvector ITs. The other handbook packages (B02 on Ollama or PostgreSQL, B07 on PostgreSQL, Presidio, Nacos, LGTM) are covered by offline tests only.
 * ❌ Embabel's compatibility was checked only from its POM (1.5.3 → Boot 4.1.1). It was not run.
 
 ## 5. Known limitations
@@ -52,8 +54,8 @@ The exact requests and expected output for each module are in its README.
 * Stage 6 observability is tested in-process (Micrometer observations with OpenInference span kinds). OTLP export to LGTM or Phoenix was not run. GraalVM native (Stage 7) is not built.
 * The Testcontainers/Arconia pillar is substituted: the live ITs expect services you start from `docker-compose.ai-support.yml`.
 * Docling is substituted by Tika/PDFBox.
-* Blueprint 06 exposes MCP tools only (no MCP resources or prompts) and one transport per node.
-* FinOps has in-memory and JDBC ledgers. Redis and a Cycles authority service are not implemented.
+* Blueprint 06 exposes MCP tools, resources and prompts, over one transport per node (SSE not tested).
+* FinOps has in-memory, JDBC and Redis (Lua) ledgers; the Redis one is proven on a live Redis. A Cycles authority service is not implemented.
 * Evaluation gates 3-5 (structured output, PII leak, token budget) are author's design: the handbook's cover promises five gates but names two.
 * Spring AI 2.0.1 was built against Boot 4.1.1. It works on 4.0.8 in these tests, but that combination is not an official pairing.
 
@@ -61,7 +63,7 @@ The exact requests and expected output for each module are in its README.
 1. Work through the Partial and Not done rows in `pdf-requirements-mapping.md`.
 2. Decide whether to move the repo to Boot 4.1.x. That would allow trying Embabel for Blueprint 01.
 3. Add Testcontainers for Postgres/pgvector and Ollama, so the live ITs can also run in CI.
-4. Re-run `mvn -B -Pit verify` on Windows after pulling, to cover the tests added by the audit.
+4. Run Blueprint 02 with `HITL_CHECKPOINT=jdbc` against the local PostgreSQL to close its Partial row.
 
 ## Showcase site
 The static site in `site/` is deployed by `.github/workflows/pages.yml` (added in `24ec17a`, workflow in `61cfcf1`)
@@ -82,3 +84,21 @@ Fixes found by the live run (all pushed):
 - Failsafe now uses `target/classes`, because Spring Boot's repackaged jar hides classes under `BOOT-INF/`.
 - Blueprint 05: Ollama chat auto-config is only enabled when `blueprints.model=ollama` (it previously created a second `ChatModel`).
 - Eval gates: small judges reply "Yes." rather than "yes", so `VerdictNormalizingChatModel` reduces replies to YES/NO. Spring AI's default relevancy prompt also made llama3.2:3b answer NO to correct answers, so the live gate uses `EvaluationGate.SMALL_JUDGE_RELEVANCY`.
+
+## Second live verification on Windows (17 Oct 2026, ~21:53 IST)
+
+Commit `219fd99`, same PC and services (Postgres 16 + pgvector on 15432, Redis on 6379, Ollama llama3.2:3b and nomic-embed-text).
+`mvn -B -Pit clean verify`: **BUILD SUCCESS in 5 min 17 s, 244 unit tests + 6 live tests, 0 failures, 0 errors.**
+
+| Live test | Result |
+|---|---|
+| `OllamaJudgeIT` (llama3.2:3b judge) | pass, 103 s: golden relevancy 80%, facts 80% (only `refund-payout` failed both); regressions 0%/0%, all 3 caught. Facts was 100% in the first live run, so the 3B judge varies between runs; thresholds unchanged (0.6/0.6) |
+| `PgVectorRagIT` (pgvector + nomic-embed-text) | pass, 4.3 s |
+| `RedisTokenBudgetLedgerIT` (real Redis, 2 tests) | pass, 2.5 s: 32 concurrent reservations of 100 tokens against 1,000, exactly 10 granted; commit moves reserved to used |
+| `OllamaPiiIT` (llama3.2:3b through the PII advisor) | pass, 23 s |
+| `GitHubCatalogueIT` (15 repositories, GitHub API) | pass, 6.5 s |
+
+The first attempt of this run failed one offline test on Windows: `IngestionServiceTest.corpusInsideAJarSkipsDirectoryEntries`
+could not delete its temporary `corpus.jar` because the JDK's `jar:` URL cache kept the file open. The test now turns that
+cache off for its own duration (`b27b9cf`). The production code was not affected.
+

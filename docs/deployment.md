@@ -27,9 +27,19 @@ docker compose -f docker-compose.apps.yml down
 - Apps that call a model reach the host's Ollama at `host.docker.internal:11434`
   (override with `OLLAMA_BASE_URL`). No API keys are needed; nothing paid is used.
 - B03, B05 and B06 also expose `/actuator/health`.
-- Verified here: the Dockerfile's build command (`mvn -pl <module> -am package`) and the jar glob
-  were run on the box, and the B05 jar booted and reported UP. The images themselves were **not**
-  built here, because the box has no Docker. Run the compose command on a machine with Docker.
+- Host port taken (for example by another app on 8081)? Override it per app with `B0N_HOST_PORT`,
+  e.g. `$env:B01_HOST_PORT = 18081` in PowerShell before `up`. The container port stays 808N.
+- Blueprint 06 needs `BLUEPRINTS_DEV_JWT_SECRET` (32+ random characters) in the shell that runs
+  `up`; compose passes it through and nothing is written to a file. Mint a token inside the container:
+  `docker compose -f docker-compose.apps.yml exec -T b06 java -cp /app/app.jar -Dloader.main=io.github.aaronsamuvel.blueprints.mcp.security.DevJwtMinter org.springframework.boot.loader.launch.PropertiesLauncher models.use models.premium`
+- **Verified on the owner's Windows PC (17 Oct 2026, IST, Docker Desktop):** `up --build -d` built all
+  seven images (520-622 MB each, sharing the JRE base layers) and started all seven containers. Results:
+  B01 investigate `goalAchieved: true` and the billing CSV escalated batch-etl (₹6,400 against ₹803.33);
+  B02 `scripts/smoke-test-workflows.sh` passed 5 of 5 checks; B03 `/actuator/health` UP and `/api/v1/rag/query`
+  answered with citations; B04 placed order 3000 (2 × SKU-MSE-04, ₹3,998.00); B05 health UP and the
+  inspect-roundtrip tokenised the person and account number; B06 health UP, 401 without a token, `PREMIUM`
+  with `models.premium`, downgraded to `LOCAL_SMART` with `models.use` only; B07 answered the revenue
+  question (3 rows) and served its agent card. `down` removed every container and the network.
 
 ## Azure (optional)
 
