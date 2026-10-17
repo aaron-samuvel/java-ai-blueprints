@@ -34,13 +34,14 @@ flowchart LR
 | `src/test/resources/regression-set.json` | 3 bad answers: a wrong number, an invented policy, an off-topic answer |
 | `src/it/java/.../OllamaJudgeIT` | Live judge |
 
-## Tests (12, offline)
+## Tests (13, offline)
 - `EvaluationGateTest` (10):
   - each golden case passes both evaluators (5);
   - the golden set passes the gate;
   - each regression fails fact-checking (3);
   - **a release whose answers regressed is blocked**: golden plus regressions comes out at 63%, under 90%.
 - `LexicalJudgeChatModelTest` (2).
+- `VerdictNormalizingChatModelTest` (1): small-judge replies such as "Yes." are reduced to bare YES/NO.
 
 Measured on the build box: golden set 100% relevancy and 100% facts; mixed set 63% / 63%, with
 exactly the 3 regressions flagged.

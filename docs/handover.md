@@ -1,6 +1,6 @@
 # Handover
 
-This is the state at the end of M5 (2026-10-17, IST): every module is implemented. Anything not covered by the handbook notes is labelled *author's design (not from handbook)* in the module docs.
+This is the state on 17 Oct 2026 (IST), after the live run, the run-each-app pass, the Pages site and the audit: every module is implemented. Anything not covered by the handbook notes is labelled *author's design (not from handbook)* in the module docs.
 
 ## 1. Prerequisites on the Windows PC
 * JDK 21 (Temurin) and Maven 3.9+ on `PATH`. See [`setup.md`](setup.md).
@@ -15,32 +15,38 @@ This is the state at the end of M5 (2026-10-17, IST): every module is implemente
 No network model, database or secret is needed. Every test uses the stub models from `shared/`.
 
 ## 3. Run each module (PowerShell, from the repo root)
-| Module | Command / entry point | Notes |
-|---|---|---|
-| part-1-lifecycle | `mvn -B -pl part-1-lifecycle -am test` | Library + tests (lifecycle, virtual threads) |
-| blueprint-01 | `mvn -B -pl blueprint-01-goap-finops-incident-agent -am spring-boot:run` | Port 8081; `POST /api/incidents/run` with a CSV (see module README) |
-| blueprint-02 | `mvn -B -pl blueprint-02-langgraph4j-hitl-evaluation -am test` | Library + tests (LangGraph4j HITL) |
-| blueprint-03 | `mvn -B -pl blueprint-03-modular-rag -am test` | Live pgvector path: `-Pit verify` (needs Postgres + Ollama) |
-| blueprint-04 | `mvn -B -pl blueprint-04-transactional-swarm -am test` | Uses H2 in memory |
-| blueprint-05 | `mvn -B -pl blueprint-05-pii-tokenization-advisor -am test` | Live: `-Pit verify` (needs Ollama) |
-| blueprint-06 | set `$env:BLUEPRINTS_DEV_JWT_SECRET` (≥32 chars, random), then `mvn -B -pl blueprint-06-mcp-mesh-model-switchboard -am spring-boot:run` | Port 8086; MCP at `/mcp`; needs a JWT signed with that secret |
-| blueprint-07 | `mvn -B -pl blueprint-07-a2a-nl2sql-agent -am test` | Uses H2 in memory |
-| pillar-finops-budget | `mvn -B -pl pillar-finops-budget -am test` | |
-| pillar-eval-gates | `mvn -B -pl pillar-eval-gates -am test` | Live judge: `-Pit verify` (needs Ollama) |
+Every app starts with `mvn -B -pl <module> -am spring-boot:run` (the parent POM and libraries skip the run goal).
+Ports default to 808N and can be changed with `$env:PORT`.
 
-The exact ports and run commands for each module are in its README.
+| Module | Command / entry point | Port, sample request |
+|---|---|---|
+| part-1-lifecycle | `mvn -B -pl part-1-lifecycle -am spring-boot:run` (or `java -jar` on the packaged jar) | CLI, prints an `IncidentTriage` record |
+| part-2-github-gems | `mvn -B -pl part-2-github-gems -am spring-boot:run` | CLI, prints the catalogue with licence advice |
+| blueprint-01 | `mvn -B -pl blueprint-01-goap-finops-incident-agent -am spring-boot:run` | 8081; `POST /api/incidents/run` with `billing-sample.csv` (`text/csv`) |
+| blueprint-02 | `mvn -B -pl blueprint-02-langgraph4j-hitl-evaluation -am spring-boot:run` | 8082; `POST /api/reviews`, then `POST /api/reviews/{id}/decision` |
+| blueprint-03 | `mvn -B -pl blueprint-03-modular-rag -am spring-boot:run` | 8083; `POST /api/ask` |
+| blueprint-04 | `mvn -B -pl blueprint-04-transactional-swarm -am spring-boot:run` | 8084; `POST /api/conversations/{id}/messages` with `X-Tenant-Id` |
+| blueprint-05 | `mvn -B -pl blueprint-05-pii-tokenization-advisor -am spring-boot:run` | 8085; `POST /api/chat` |
+| blueprint-06 | set `$env:BLUEPRINTS_DEV_JWT_SECRET` (≥32 chars, random), then `mvn -B -pl blueprint-06-mcp-mesh-model-switchboard -am spring-boot:run` | 8086; `POST /api/switchboard/ask` with a token from `DevJwtMinter`; MCP at `/mcp` |
+| blueprint-07 | `mvn -B -pl blueprint-07-a2a-nl2sql-agent -am spring-boot:run` | 8087; `GET /.well-known/agent.json`, `POST /a2a/tasks` |
+| pillar-finops-budget | `mvn -q -pl pillar-finops-budget -am install -DskipTests`, then `mvn -q -pl pillar-finops-budget exec:java -Dexec.mainClass=io.github.aaronsamuvel.blueprints.finops.FinOpsDemo` | CLI demo |
+| pillar-eval-gates | `mvn -B -pl pillar-eval-gates -am verify` | Library; live judge with `-Pit` |
+
+The exact requests and expected output for each module are in its README.
 
 ## 4. What has been verified, and what hasn't
-* ✅ `mvn -B clean verify` on the Linux build box: **BUILD SUCCESS, 122 tests, 0 failures**.
-* ✅ `mvn -B -Pit test-compile`: the live integration tests compile.
-* ❌ **The live `-Pit` tests have never been run** (`OllamaPiiIT`, `PgVectorRagIT`, `OllamaJudgeIT`). No Ollama or Postgres was available on the build box.
-* ❌ Nothing has been run on Windows yet. `verify.ps1` has not been executed.
+* ✅ `mvn -B clean verify` on the Linux build box (17 Oct 2026, after the audit): **BUILD SUCCESS, 13 reactor projects, 134 tests, 0 failures**. `mvn -B -Pit test-compile` also succeeds.
+* ✅ The same offline build runs in GitHub Actions (`.github/workflows/ci.yml`) on every push and pull request, together with a relative-link check (`scripts/check-links.py`).
+* ✅ `mvn -B -Pit clean verify` on the owner's Windows PC: BUILD SUCCESS with 123 unit tests and the 3 live tests (details below). That run predates the audit's new tests.
+* ✅ Each app was packaged, started on Windows and called over HTTP (results on the [showcase site](https://aaron-samuvel.github.io/java-ai-blueprints/)). That pass found 3 bugs, fixed in `f0a9ebe`, `ee06b5e` and `ee419d4`.
+* ✅ The audit re-ran every app with `mvn -pl <app> -am spring-boot:run` on the build box (stub models) and found the `-am` run bug, fixed in `d32b529`.
+* ✅ `GitHubCatalogueIT` (Part II, live GitHub API) passed on the build box: 11 repositories, HTTP 200, licences as recorded.
 * ❌ The mapping was written from notes, not from the original handbook PDF, which was unavailable.
 * ❌ Embabel's compatibility was checked only from its POM (1.5.3 → Boot 4.1.1). It was not run.
 
 ## 5. Known limitations
 * Blueprint 01 uses its own GOAP planner instead of Embabel (see its README).
-* Blueprint 06 validates HS256 dev JWTs only. A real IdP (`issuer-uri`) is left as an exercise. There's no token-minting CLI.
+* Blueprint 06 validates HS256 dev JWTs only (mint them locally with `DevJwtMinter`). A real IdP (`issuer-uri`) is left as an exercise.
 * Blueprint 07 is an A2A-style single agent. A multi-agent A2A mesh is not implemented.
 * Stage 6 (OpenInference semantic observability) is theory only. GraalVM native (Stage 7) is not built.
 * The Testcontainers/Arconia pillar is partial: the live ITs expect services you start yourself.
@@ -48,11 +54,14 @@ The exact ports and run commands for each module are in its README.
 * Spring AI 2.0.1 was built against Boot 4.1.1. It works on 4.0.8 in these tests, but that combination is not an official pairing.
 
 ## 6. Suggested next steps
-1. On Windows, run `.\scripts\verify.ps1`, then start Ollama and Postgres, set `PGPASSWORD`, and run `mvn -B -Pit verify`. Record the real results in `project-progress.md`.
-2. Re-check `pdf-requirements-mapping.md` against the handbook PDF.
-3. Decide whether to move the repo to Boot 4.1.x. That would allow trying Embabel for Blueprint 01.
-4. Add Testcontainers for Postgres/pgvector and Ollama, so the ITs can run in CI.
-5. Add a GitHub Actions workflow that runs `mvn -B verify` (offline tests only).
+1. Re-check `pdf-requirements-mapping.md` against the handbook PDF.
+2. Decide whether to move the repo to Boot 4.1.x. That would allow trying Embabel for Blueprint 01.
+3. Add Testcontainers for Postgres/pgvector and Ollama, so the live ITs can also run in CI.
+4. Re-run `mvn -B -Pit verify` on Windows after pulling, to cover the tests added by the audit.
+
+## Showcase site
+The static site in `site/` is deployed by `.github/workflows/pages.yml` (added in `24ec17a`, workflow in `61cfcf1`)
+to https://aaron-samuvel.github.io/java-ai-blueprints/. It documents recorded results; the apps run locally.
 
 ## Live verification on Windows (17 Oct 2026, IST)
 

@@ -5,16 +5,38 @@ versioning: [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- `.github/workflows/ci.yml`: offline `mvn -B verify` on Temurin 21 for every push to `main` and every pull request,
+  plus `scripts/check-links.py`, which fails on broken relative links in Markdown and the site (`a3b1c0f`).
+- `part-2-github-gems/` is now a full topic module: theory, examples, exercises, `gems.csv` (licence and language from
+  the GitHub API on 2026-10-17), `GemsCatalogue`, `ReuseAdvice`, the `GemsReport` CLI, 6 offline tests and a live
+  `GitHubCatalogueIT` under `-Pit` (`ac6966e`).
+- `blueprint-06`: `DevJwtMinter` mints local HS256 dev tokens from `BLUEPRINTS_DEV_JWT_SECRET`, with 2 tests (`5b95081`).
+- GitHub Pages showcase site in `site/` with the recorded run results (`24ec17a`), deployed by
+  `.github/workflows/pages.yml` (`61cfcf1`).
+- `shared/README.md`; CI, Pages and licence badges in the README.
+
 ### Fixed
+- Build: `mvn -pl <app> -am spring-boot:run`, the command every README documents, failed on the parent POM with
+  `Unable to find a suitable main class`. The parent and libraries now skip the run goal; Part I has a runnable jar (`d32b529`).
+- Docs: setup, troubleshooting, handover, progress, requirements mapping and module READMEs updated for the live run,
+  the run-each-app pass and the audit (test counts, ports, `PORT` override, Blueprint 06 token steps). `setup.md`
+  no longer claims the apps read `PGPASSWORD` (only `PgVectorRagIT` does).
+
+Found by the live `-Pit` run on Windows (2026-10-17): Blueprint 03 `it` profile DataSource (`4cc075d`), failsafe and
+repackaged jars (`df077dc`), Blueprint 05 duplicate `ChatModel` (`89e443c`), small-judge verdict parsing and model
+name (`2433c55`, `265813e`, `f647cd7`), and a shorter relevancy prompt for small judges (`e53f8b3`).
+
+### Fixed (run-each-app pass)
 Found by starting each packaged app on Windows and calling it over HTTP (2026-10-17):
 - `blueprint-03`: startup failed from the packaged jar with `no parser for ` because the corpus pattern also
-  matched jar directory entries; they are now skipped (regression test ingests from a real jar).
+  matched jar directory entries; they are now skipped (regression test ingests from a real jar) (`ee06b5e`).
 - `blueprint-06`: the documented `BLUEPRINTS_DEV_JWT_SECRET` env var was never read (no `JwtDecoder`, app did not
-  start); it is now mapped in `application.properties` and the dev decoder turns on only for a non-blank secret.
+  start); it is now mapped in `application.properties` and the dev decoder turns on only for a non-blank secret (`ee419d4`).
 - `blueprint-02`: the review `history` lost repeated entries (`Channels.appender` drops duplicates); it now uses
-  `appenderWithDuplicate`.
+  `appenderWithDuplicate` (`f0a9ebe`).
 
-### Added
+### Added (milestones M2–M5)
 - `blueprint-03-modular-rag/` (M2): keyword query router with SMALLTALK, POLICY, TECHNICAL and GENERAL branches;
   domain-filtered `RoutingDocumentRetriever`; `RetrievalAugmentationAdvisor` with
   `ContextualQueryAugmenter(allowEmptyContext=false)`; Markdown section parser; Docling stub parser;

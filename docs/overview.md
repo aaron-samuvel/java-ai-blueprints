@@ -4,7 +4,7 @@
 Systems*. The handbook has four parts:
 
 1. **Part I:** the J-AIDLC (7 stages), five Java pillars and a framework matrix → `part-1-lifecycle/`
-2. **Part II:** ten open-source GitHub repositories worth studying → `part-2-github-gems/`
+2. **Part II:** ten open-source GitHub repositories worth studying → `part-2-github-gems/` (catalogue as tested data, with licences)
 3. **Part III:** seven architecture blueprints → `blueprint-01…07/`
 4. **Part IV:** FinOps budget advisor, JUnit evaluation gates, TOON, AGENTS.md → `pillar-*/`, `AGENTS.md`
 

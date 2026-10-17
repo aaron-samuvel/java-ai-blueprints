@@ -38,9 +38,9 @@ Ingestion (ETL): `corpus/<domain>/*.md` → `MarkdownSectionParser` (or `Docling
 | `src/main/resources/corpus/` | Sample policy and technical documents (synthetic) |
 | `src/it/java/.../PgVectorRagIT` | Live pgvector + Ollama `nomic-embed-text` (`-Pit`) |
 
-## Tests (20, offline)
+## Tests (21, offline)
 - `KeywordQueryRouterTest` (7): one per branch.
-- `IngestionServiceTest` (4): section splitting, metadata, Docling stub path, unsupported types, the classpath corpus.
+- `IngestionServiceTest` (5): section splitting, metadata, Docling stub path, unsupported types, the classpath corpus, and ingesting from a packaged jar (directory entries are skipped).
 - `ModularRagServiceTest` (4):
   - policy questions are grounded **only** in policy docs, and technical questions only in technical docs;
   - smalltalk never retrieves;
