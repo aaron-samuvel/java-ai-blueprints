@@ -46,7 +46,8 @@ flowchart LR
 flowchart LR
   u[Unit + slice tests<br/>StubChatModel, no network] -->|mvn verify| ci[default build]
   it[*IT tests<br/>Ollama / Testcontainers] -->|mvn -Pit verify| local[developer PC]
-  ev[Evaluation gates<br/>Relevancy / FactChecking] -->|planned| local
+  ev[Evaluation gates<br/>FactChecking, Relevancy + 3 deterministic] -->|mvn verify, lexical judge| ci
+  ev -->|mvn -Pit verify, Ollama judge| local
 ```
 
 ## Key decisions

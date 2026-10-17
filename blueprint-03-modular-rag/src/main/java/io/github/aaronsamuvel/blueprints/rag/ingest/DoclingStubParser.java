@@ -9,7 +9,7 @@ import org.springframework.ai.document.Document;
  * parsing; running it needs a separate Python service, so this repo ships a <b>stub</b>: it
  * accepts {@code .pdf}/{@code .docx} names whose content has already been converted to Markdown
  * text (for example with the Docling CLI) and delegates to {@link MarkdownSectionParser}.
- * A real HTTP client for docling-serve is planned; see the module README.
+ * No docling-serve HTTP client is implemented; {@code DocumentIngestionService} uses Tika/PDFBox instead (see the module README).
  */
 public class DoclingStubParser implements DocumentParser {
 

@@ -37,3 +37,7 @@ ul.res li{margin:.15rem 0}
 .card .foot{margin-top:auto;padding-top:1rem}
 .card .foot a{font-weight:600;text-decoration:none}
 footer{border-top:1px solid var(--border);margin-top:4rem;padding:2rem 0;color:var(--muted);font-size:.9rem}
+.cov{display:flex;border-radius:8px;overflow:hidden;border:1px solid var(--border);margin:1rem 0 .5rem;font-size:.85rem;font-weight:600}
+.cov span{padding:.55rem .6rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.c-done{background:#065f46;color:#d1fae5}.c-part{background:#854d0e;color:#fef3c7}.c-sub{background:#3730a3;color:#e0e7ff}.c-not{background:#7f1d1d;color:#fee2e2}
+.cov-note{color:var(--muted);font-size:.9rem}

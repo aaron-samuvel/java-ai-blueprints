@@ -5,6 +5,30 @@ versioning: [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Added: handbook PDF conformance pass (17 Oct 2026)
+The repository was re-checked against both handbook PDFs. The full result is in `docs/pdf-requirements-mapping.md`:
+119 requirements, 73 Done, 23 Partial, 15 Substituted, 8 Not done.
+- Environment (companion guide): `docker-compose.ai-support.yml`, `.env.template`, `infra/postgres/init.sql`,
+  `scripts/preflight-check.sh` / `.ps1`, and the `aiEnvironment` health indicator in `shared/` (`82814e7`).
+  `docs/environment.md` covers the guide step by step, and `.env.template` gained the guide's alias variables (`6266f8e`).
+- Blueprint 01: `CloudRemediationAgent` on a type-driven GOAP platform, `/api/v1/incidents/investigate`, Spring Shell `execute` (`ceb4eda`).
+- Blueprint 02: submission review graph with 4 parallel evaluators, consensus exits, `JdbcCheckpointSaver`, node hooks and a smoke script (`db6312c`).
+- Blueprint 03: multi-format idempotent ingestion, pre-retrieval transforms, branching retriever, `GroundedAnswer` citations (`113bb80`).
+- Blueprint 04: commerce swarm with handoffs, transactional order and refund tools, tenant memory, SSE and `swarm.html` (`76f4fa5`).
+- Blueprint 05: `pii/guardrails`, with an analyzer SPI (regex, OpenNLP, Presidio), the vault, response policies, a tool guard and the privacy inspector (`b8a20e7`).
+- Blueprint 06: ops-server role (Batch introspection, JFR diagnostics, OpenAPI-to-MCP bridge) and the v2 switchboard router (`6569bfa`).
+- Blueprint 07: Sequential/Parallel/Loop agents, schema index, tenant-injecting SQL guard, EXPLAIN-checked self-healing, A2A mesh (`7daa75c`).
+- FinOps: `TokenBudgetAuthority` and `JdbcTokenBudgetLedger` (daily budgets, atomic conditional `UPDATE`) (`4c302df`).
+- Eval gates: `GateSuite` with five gates (2 from the handbook, 3 of the author's design), and json-io TOON with a measured token comparison (`af591ba`).
+- Part I: `observability/` (OpenInference span kinds on Spring AI observations) and Jackson descriptions on `IncidentTriage`.
+  `AGENTS.md` was rewritten to the handbook's four-section constitution, and `CLAUDE.md` added (`5b74092`).
+- Part II: the catalogue grew from 11 to 15 entries, so every repository named in the 10 rows is listed. The live check was re-run (`ae4c2d6`, `0404eaf`).
+
+### Changed
+- `docs/pdf-requirements-mapping.md` is now a page-referenced traceability matrix. The old "written from reading notes"
+  caveat is removed everywhere, because the PDFs were checked directly.
+- README, site, handover, progress, overview, architecture and version notes: updated test counts (240 offline) and coverage figures.
+
 ### Added
 - `.github/workflows/ci.yml`: offline `mvn -B verify` on Temurin 21 for every push to `main` and every pull request,
   plus `scripts/check-links.py`, which fails on broken relative links in Markdown and the site (`a3b1c0f`).

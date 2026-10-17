@@ -17,6 +17,9 @@ Systems*. The handbook has four parts:
 ## Who it is for
 Java and Spring developers moving into AI engineering who want patterns they can show in production and in a portfolio.
 
-## Source caveat
-The original PDF wasn't available while this repo was built. The content comes from reading notes.
-See the note in [pdf-requirements-mapping.md](pdf-requirements-mapping.md).
+## Sources
+The repository is checked against two PDFs: the 18-page master handbook, *Enterprise Java & Spring Boot AI
+Systems*, and its 10-page companion, *Pre-Installation & Supporting Environment Flow Guide*. Every requirement,
+with its page and status (Done / Partial / Substituted / Not done), is in the
+[traceability matrix](pdf-requirements-mapping.md). The companion guide is covered step by step in
+[environment.md](environment.md).

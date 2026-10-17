@@ -22,9 +22,9 @@
 | Handbook | What we do | Why |
 |---|---|---|
 | TOON gives 40–50% token savings | **Measured** in Blueprint 03: 38–39% vs compact JSON (65% vs pretty) on uniform tables; 16% on long-text chunks; nested data is 26–31% *larger* than compact JSON | Holds only for tabular payloads or a pretty-JSON baseline; see `blueprint-03-modular-rag/theory.md` |
-| Azure Cosmos DB (multi-agent repo) | **pgvector** on Postgres | Free, local, and unified with business data (pillar 5) |
-| Nacos (Spring AI Alibaba) | Plain Spring config / env vars | Too heavy for a learning repo; nothing here needs it |
-| Docling as a running service | `DoclingStubParser` (pre-converted Markdown) | Python service not needed for the default build; HTTP client planned |
+| Azure Cosmos DB DiskANN (multi-agent repo) | `SimpleVectorStore` in Blueprint 04 (pgvector in Blueprint 03's live IT) | No Azure account (paid); offline-first |
+| Nacos (Spring AI Alibaba) | `LocalAgentRegistry` behind an `AgentRegistry` interface (Blueprint 07) | No Nacos client in the build; Nacos is in the support compose file |
+| Docling as a running service | Apache Tika + PDFBox (`DocumentIngestionService`); `DoclingStubParser` for pre-converted Markdown | Docling is a Python service; the handbook's Stage 3 names Tika as the alternative. No docling-serve client is implemented |
 | Cloud-hosted models | **Ollama** (`llama3.2:3b`, `nomic-embed-text`) | No paid services; runs on an 8 GB PC |
 | `thomasvitale/arconia` | `arconia-io/arconia` | The old path returns 404 |
 

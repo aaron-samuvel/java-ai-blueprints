@@ -35,5 +35,6 @@ work as **tasks**. This blueprint exposes:
 - `GET /.well-known/agent.json`: the card, listing the `nl2sql` skill;
 - `POST /a2a/tasks`: runs the skill and returns `COMPLETED` or `FAILED`, with the SQL, rows, attempt count and errors as the artifact.
 
-That's enough for an orchestrator agent to call it. The official protocol (JSON-RPC, streaming,
-task lifecycle) is broader, and moving to it is planned.
+That's enough for an orchestrator agent to call it. The `mesh/` package goes further: JSON-RPC 2.0
+`message/send` at `POST /a2a` and a card at `/.well-known/agent-card.json`. The official protocol (streaming,
+`tasks/get`, push notifications) is broader still, and those parts are not implemented.

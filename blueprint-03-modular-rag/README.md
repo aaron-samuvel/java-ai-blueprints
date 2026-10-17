@@ -110,9 +110,9 @@ mvn -B -Pit verify -pl blueprint-03-modular-rag -am
 ```
 
 ## Assumptions and limits *(author's design, not from handbook)*
-- **Docling is stubbed.** Real Docling is a Python service. `DoclingStubParser` takes text that has
-  already been converted to Markdown, so the pipeline shape stays the same. A real docling-serve
-  HTTP client is planned.
+- **Docling is substituted.** Real Docling is a Python service. `DocumentIngestionService` uses Apache Tika and
+  PDFBox, which the handbook's Stage 3 names as the alternative. `DoclingStubParser` takes text that has already been
+  converted to Markdown. No docling-serve HTTP client is implemented.
 - The keyword router is deliberately simple and deterministic. Exercise 2 adds an LLM fallback.
 - The similarity threshold of 0.2 is tuned for the stub bag-of-words embeddings. The IT uses 0.3
   with `nomic-embed-text`; tune it on real data.

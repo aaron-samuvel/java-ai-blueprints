@@ -5,7 +5,7 @@ Last updated: 17 Oct 2026 (IST)
 ## Milestones
 | # | Milestone | Status |
 |---|---|---|
-| M0 | Discovery & plan | ✅ done (from reading notes; PDF unavailable) |
+| M0 | Discovery & plan | ✅ done; re-checked against both handbook PDFs in M11 |
 | M1 | Foundation: root build, shared, docs, Part I, Blueprint 05, placeholders | ✅ done, pushed |
 | M2 | Blueprint 03 modular RAG (+ TOON measurement) | ✅ done, pushed |
 | M3 | Blueprint 07 NL2SQL guard; FinOps budget pillar | ✅ done, pushed (`b58bce7`) |
@@ -16,6 +16,7 @@ Last updated: 17 Oct 2026 (IST)
 | M8 | Run each app on Windows | ✅ all start and answer; fixes `f0a9ebe`, `ee06b5e`, `ee419d4` |
 | M9 | GitHub Pages showcase site | ✅ live (`24ec17a`, `61cfcf1`) |
 | M10 | Audit: CI, Part II module, run-command fixes, docs | ✅ done (`d32b529` onward, see below) |
+| M11 | Conformance pass against both handbook PDFs | ✅ done (`82814e7` … see below); 119 requirements traced |
 
 ## M1 verification
 `mvn -B verify` on the build box (Temurin 21.0.12.1, Maven 3.9.16): **BUILD SUCCESS, 24 tests,
@@ -57,6 +58,18 @@ blueprint-02 7, blueprint-04 8). `-Pit` test sources compile (including `OllamaJ
 - Every app started with `-am spring-boot:run` on the build box and answered its README request (stub models).
 - `GitHubCatalogueIT` (`-Pit`, live GitHub API) passed on the build box.
 
+## M11 PDF conformance verification (17 Oct 2026, IST)
+- Both PDFs (the 18-page master handbook and the 10-page environment guide) were read and traced requirement by requirement
+  in `docs/pdf-requirements-mapping.md`: **73 Done, 23 Partial, 15 Substituted, 8 Not done** (119).
+- Commits: env `82814e7`; B01 `ceb4eda`; B02 `db6312c`; B03 `113bb80`; B04 `76f4fa5`; B05 `b8a20e7`; B06 `6569bfa`;
+  B07 `7daa75c`; FinOps JDBC ledger `4c302df`; five gates and TOON `af591ba`; Part I observability, AGENTS.md and
+  CLAUDE.md `5b74092`; Part II 15 repositories `ae4c2d6`, `0404eaf`; environment doc `6266f8e`; docs, site and matrix (this release).
+- `mvn -B -o clean verify` on the build box: **BUILD SUCCESS, 13 reactor projects, 240 tests, 0 failures, 0 errors, 0 skipped**
+  (shared 5, part-1 6, part-2 6, B01 20, B02 25, B03 35, B04 21, B05 32, B06 22, B07 36, finops 13, eval-gates 19).
+- `GitHubCatalogueIT` (`-Pit`) re-run on the build box: all 15 repositories returned 200 with the recorded licence.
+- `scripts/preflight-check.sh` on the build box: 0 failed, 8 warnings (no Docker, Ollama or backing services).
+
 ## Open items
-- Re-check the mapping against the original PDF when it's available.
-- Re-run `mvn -B -Pit verify` on Windows to cover the tests added in M10.
+- Re-run `mvn -B -Pit verify` on Windows (Ollama + pgvector) to cover the tests added in M10 and M11.
+- The Partial and Not done rows in the traceability matrix, mainly anything that needs Docker (Testcontainers,
+  Presidio, Nacos, LGTM export), GraalVM native, Embabel (needs Boot 4.1.x), MCP resources and prompts, and Redis/Cycles.

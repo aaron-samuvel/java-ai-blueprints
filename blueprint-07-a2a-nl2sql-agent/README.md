@@ -108,8 +108,9 @@ Tests: 36 in total, all offline:
 - the 22 earlier tests.
 
 ## Assumptions and limits *(author's design, not from handbook)*
-- **"A2A-style", not the official A2A SDK.** The agent card and task endpoints follow the A2A
-  idea (discovery plus tasks), simplified to synchronous JSON. A full A2A mesh with several agents is planned.
+- **A2A subset, not the official A2A SDK.** The first-cut `/a2a/tasks` endpoint is A2A-style JSON. The
+  handbook-shaped `mesh/` package speaks JSON-RPC 2.0 `message/send` with an agent card, and `MeshCoordinator`
+  fans out to the registered agents. Streaming, `tasks/get` and push notifications are not implemented.
 - "3 retries" is read as 1 initial attempt + 3 retries, so at most 4 model calls.
 - Defence in depth: the guard, plus `JdbcTemplate.setMaxRows(500)` and a 10 s query timeout. In
   production, also connect with a read-only database user.
