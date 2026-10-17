@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * </ol>
  * In-memory and thread-safe (one lock per tenant). Production would back it with Postgres or Redis.
  */
-public class TokenBudgetLedger {
+public class TokenBudgetLedger implements TokenBudgetAuthority {
 
     public record Reservation(String id, String tenant, long tokens) {}
 
@@ -40,6 +40,7 @@ public class TokenBudgetLedger {
         synchronized (a) { a.limit = limit; }
     }
 
+    @Override
     public Reservation reserve(String tenant, long tokens) {
         if (tokens <= 0) throw new IllegalArgumentException("tokens must be positive");
         Account a = account(tenant);
@@ -54,6 +55,7 @@ public class TokenBudgetLedger {
     }
 
     /** Record actual usage. Actual may exceed the estimate; it is charged anyway (it was spent). */
+    @Override
     public void commit(Reservation r, long actualTokens) {
         Account a = account(r.tenant());
         synchronized (a) {
@@ -64,6 +66,7 @@ public class TokenBudgetLedger {
         }
     }
 
+    @Override
     public void release(Reservation r) {
         Account a = account(r.tenant());
         synchronized (a) {
@@ -72,6 +75,7 @@ public class TokenBudgetLedger {
         }
     }
 
+    @Override
     public Snapshot snapshot(String tenant) {
         Account a = account(tenant);
         synchronized (a) { return new Snapshot(tenant, a.limit, a.reserved, a.used); }

@@ -28,13 +28,13 @@ public class FinOpsBudgetAdvisor implements CallAdvisor {
     public static final String TENANT_KEY = "finops.tenant";
     public static final int ORDER = Ordered.HIGHEST_PRECEDENCE + 10;
 
-    private final TokenBudgetLedger ledger;
+    private final TokenBudgetAuthority ledger;
     private final TokenEstimator estimator;
     private final long maxOutputTokens;
     private final PriceList prices;
     private final List<UsageRecord> records = new CopyOnWriteArrayList<>();
 
-    public FinOpsBudgetAdvisor(TokenBudgetLedger ledger, TokenEstimator estimator, long maxOutputTokens, PriceList prices) {
+    public FinOpsBudgetAdvisor(TokenBudgetAuthority ledger, TokenEstimator estimator, long maxOutputTokens, PriceList prices) {
         this.ledger = ledger;
         this.estimator = estimator;
         this.maxOutputTokens = maxOutputTokens;
