@@ -66,6 +66,11 @@ class ReviewWorkflowTest {
         assertThat(v.status()).isEqualTo("AWAITING_HUMAN");
         assertThat(v.evalPassed()).isFalse();
         assertThat(v.revision()).isEqualTo(2);
+        // every evaluation is recorded, including repeated identical verdicts
+        assertThat(v.history()).containsExactly(
+                "drafter: revision 0", "evaluator: fail",
+                "drafter: revision 1", "evaluator: fail",
+                "drafter: revision 2", "evaluator: fail");
     }
 
     @Test

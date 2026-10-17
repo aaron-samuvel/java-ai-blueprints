@@ -21,8 +21,12 @@ public class ReviewState extends AgentState {
     public static final String STATUS = "status";
     public static final String HISTORY = "history";
 
-    /** {@code history} accumulates (appender channel); every other key is last-write-wins. */
-    public static final Map<String, Channel<?>> SCHEMA = Map.of(HISTORY, Channels.appender(ArrayList::new));
+    /**
+     * {@code history} accumulates; every other key is last-write-wins. It must keep duplicates:
+     * the plain {@code Channels.appender} silently drops a repeated entry, so a second
+     * "evaluator: fail" would vanish from the audit trail.
+     */
+    public static final Map<String, Channel<?>> SCHEMA = Map.of(HISTORY, Channels.appenderWithDuplicate(ArrayList::new));
 
     public ReviewState(Map<String, Object> init) {
         super(init);
