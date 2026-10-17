@@ -1,6 +1,6 @@
 # Blueprint 06: MCP server mesh and model switchboard (OAuth2)
 
-**Status: done.** It has 9 offline tests, all passing (`mvn -B verify -pl blueprint-06-mcp-mesh-model-switchboard -am`).
+**Status: done.** It has 13 offline tests, all passing (`mvn -B verify -pl blueprint-06-mcp-mesh-model-switchboard -am`).
 
 * **MCP node:** a Spring AI 2.0.1 MCP server (`spring-ai-starter-mcp-server-webmvc`, Streamable HTTP at `/mcp`). It exposes one toolset, chosen with `blueprints.mcp.toolset=billing|inventory`.
 * **Mesh:** `McpMesh` connects to N nodes with the MCP Java SDK 2.0.0 Streamable HTTP client. It sends a bearer token and merges every node's tools into Spring AI `ToolCallback`s that can go straight into `ChatClient.toolCallbacks(...)`.
@@ -14,11 +14,28 @@ There is no external authorization server. For local development the node valida
 ## Run (Windows PowerShell)
 
 ```powershell
+# 1. a random dev secret, kept only in this shell (32+ characters)
 $env:BLUEPRINTS_DEV_JWT_SECRET = -join ((1..48) | % { [char](Get-Random -Min 65 -Max 90) })
+# 2. start the node on port 8086 (override with $env:PORT)
 mvn -B -pl blueprint-06-mcp-mesh-model-switchboard -am spring-boot:run
 ```
 
-Port 8086. To try the API by hand, mint a token with the same secret (for example on jwt.io, locally, with claim `"scope":"models.use"`). Then:
-`curl.exe -X POST http://localhost:8086/api/switchboard/ask -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d "{\"task\":\"CRITICAL\",\"message\":\"hi\"}"`
+In a **second** shell, set the same `BLUEPRINTS_DEV_JWT_SECRET` value, then mint a one-hour token locally with
+`DevJwtMinter` (it reads the secret from the env var only; arguments are the scopes) and call the switchboard:
+
+```powershell
+mvn -q -pl blueprint-06-mcp-mesh-model-switchboard -am install -DskipTests     # once
+$token = mvn -q -pl blueprint-06-mcp-mesh-model-switchboard exec:java `
+  "-Dexec.mainClass=io.github.aaronsamuvel.blueprints.mcp.security.DevJwtMinter" "-Dexec.args=models.use models.premium"
+curl.exe -X POST http://localhost:8086/api/switchboard/ask -H "Authorization: Bearer $token" `
+  -H "Content-Type: application/json" -d '{\"task\":\"CRITICAL\",\"message\":\"hi\"}'
+```
+
+Expected (stub models): `{"requested":"PREMIUM","used":"PREMIUM","downgraded":false,"answer":"[PREMIUM] hi"}`.
+Mint with only `models.use` and the same request is downgraded to `LOCAL_SMART`; with no token you get `401`.
+The MCP endpoint `/mcp` needs a token with scope `mcp.tools`.
+
+Bash equivalent: `export BLUEPRINTS_DEV_JWT_SECRET=...`, `TOKEN=$(mvn -q ... exec:java ...)`, then
+`curl -X POST localhost:8086/api/switchboard/ask -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"task":"CRITICAL","message":"hi"}'`.
 
 See [`theory.md`](theory.md), [`examples/README.md`](examples/README.md) and [`exercises.md`](exercises.md).
