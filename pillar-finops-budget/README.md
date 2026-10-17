@@ -37,6 +37,7 @@ sequenceDiagram
 | `TokenBudgetAuthority` | The reserve/commit/release contract the advisor depends on |
 | `TokenBudgetLedger` | Thread-safe in-memory per-tenant ledger (limit, reserved, used) |
 | `JdbcTokenBudgetLedger` | PostgreSQL/H2 ledger with **daily** budgets; one atomic conditional `UPDATE … WHERE used + reserved + ? <= limit_tokens` per reservation |
+| `redis.RedisTokenBudgetLedger` | Redis ledger with **daily** per-tenant hashes; reserve/settle/snapshot are single Lua scripts (`SpringDataRedisBudgetGateway`), reservation keys carry a TTL so crashed callers' holds expire |
 | `TokenEstimator` | JTokkit BPE count with a safety margin |
 | `FinOpsBudgetAdvisor` | The advisor, which also keeps a `UsageRecord` audit trail |
 | `PriceList` | INR per 1K tokens (`FREE` for local Ollama) |
@@ -54,6 +55,8 @@ sequenceDiagram
   - an over-budget call is blocked with zero model calls;
   - a failing provider releases its reservation;
   - the budget runs out after repeated calls.
+- `RedisTokenBudgetLedgerTest` (3, in-memory gateway fake): 32 concurrent reservations of 100 against 1,000 grant exactly 10; commit/release/double-settle; the advisor blocks before the model.
+- `RedisTokenBudgetLedgerIT` (`-Pit`, live Redis on `localhost:6379`, e.g. the `ai-redis` container): the same concurrency check through the real Lua scripts.
 - `JdbcTokenBudgetLedgerTest` (3, H2 in memory):
   - 32 concurrent virtual-thread reservations of 100 against a 1,000 limit: exactly 10 granted, 22 refused;
   - commit charges actual usage, release returns everything, a double commit is rejected, and the next UTC day starts a fresh budget;
@@ -63,12 +66,13 @@ sequenceDiagram
 | Handbook step | Status | Where |
 |---|---|---|
 | High-priority `CallAdvisor` | Done | `FinOpsBudgetAdvisor.ORDER = HIGHEST_PRECEDENCE + 10` |
-| Step 1: estimate prompt + completion, atomically reserve in PostgreSQL/Redis | Done (PostgreSQL-compatible SQL, tested on H2) | `TokenEstimator`, `JdbcTokenBudgetLedger.reserve` |
+| Step 1: estimate prompt + completion, atomically reserve in PostgreSQL/Redis | Done (PostgreSQL SQL tested on H2; Redis Lua script) | `TokenEstimator`, `JdbcTokenBudgetLedger.reserve`, `RedisTokenBudgetLedger.reserve` |
 | Daily/monthly budget, `BudgetExceededException` before the HTTP call | Done for daily; monthly is the same code with a `YearMonth` period | `JdbcTokenBudgetLedger` |
 | Step 2: continue the chain | Done | `chain.nextCall` |
 | Step 3: commit `Usage` from `ChatResponse` metadata, release on failure | Done | `FinOpsBudgetAdvisor` |
 | Cost in micro-dollars | Substituted: INR per 1K tokens (`PriceList`) | `UsageRecord.cost` |
-| Redis or a Cycles authority service | Not done: no Redis or Cycles server on the box; `TokenBudgetAuthority` is the plug-in point | — |
+| Redis authority | Done: Lua reservation; offline test on an in-memory fake gateway, live `RedisTokenBudgetLedgerIT` under `-Pit` against `localhost:6379` (not run on the box: no Redis there) | `redis/` |
+| Cycles authority service | Not done: no Cycles server; `TokenBudgetAuthority` is the plug-in point | — |
 
 ## Run
 ```bash
