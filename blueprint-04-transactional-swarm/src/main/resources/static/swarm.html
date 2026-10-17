@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commerce swarm: live handoffs</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 52rem; margin: 2rem auto; padding: 0 1rem; color: #1b1f24; }
+  fieldset { display: flex; gap: .5rem; flex-wrap: wrap; border: 1px solid #d0d7de; border-radius: 8px; }
+  input { padding: .4rem; } input[name=message] { flex: 1 1 100%; }
+  button { padding: .45rem 1rem; }
+  .turn { border-left: 3px solid #0969da; padding: .4rem .8rem; margin: 1rem 0; }
+  .badge { display: inline-block; background: #ddf4ff; color: #0550ae; border-radius: 999px; padding: .1rem .6rem; margin: .15rem; font-size: .85rem; }
+  .agent { background: #dafbe1; color: #116329; }
+  pre { white-space: pre-wrap; background: #f6f8fa; padding: .6rem; border-radius: 6px; }
+</style>
+</head>
+<body>
+<h1>Commerce swarm</h1>
+<p>Each message goes to <code>POST /api/v1/swarm/chat/stream</code>. Handoff badges appear as the
+server sends <code>handoff</code> events; the answer arrives in the final <code>reply</code> event.</p>
+<form id="f">
+  <fieldset>
+    <input name="tenantId" value="acme" aria-label="tenant">
+    <input name="userId" value="u-asha" aria-label="user">
+    <input name="sessionId" value="s-1" aria-label="session">
+    <input name="message" value="Which headphones work with my laptop?" aria-label="message">
+    <button>Send</button>
+  </fieldset>
+</form>
+<div id="log"></div>
+<script>
+const f = document.getElementById('f'), log = document.getElementById('log');
+f.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const body = Object.fromEntries(new FormData(f));
+  const turn = document.createElement('div'); turn.className = 'turn';
+  turn.innerHTML = '<strong></strong><div class="badges"></div><pre>…</pre>';
+  turn.querySelector('strong').textContent = body.message;
+  log.prepend(turn);
+  const res = await fetch('api/v1/swarm/chat/stream', { method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'text/event-stream' }, body: JSON.stringify(body) });
+  if (!res.ok) { turn.querySelector('pre').textContent = 'HTTP ' + res.status; return; }
+  const reader = res.body.getReader(), dec = new TextDecoder(); let buf = '';
+  for (;;) {
+    const { value, done } = await reader.read(); if (done) break;
+    buf += dec.decode(value, { stream: true });
+    let i; while ((i = buf.indexOf('\n\n')) >= 0) {
+      const chunk = buf.slice(0, i); buf = buf.slice(i + 2);
+      const ev = (chunk.match(/^event:(.*)$/m) || [])[1]?.trim();
+      const data = chunk.split('\n').filter(l => l.startsWith('data:')).map(l => l.slice(5)).join('\n');
+      if (!data) continue; const obj = JSON.parse(data);
+      const b = document.createElement('span');
+      if (ev === 'handoff') { b.className = 'badge'; b.textContent = obj.from + ' → ' + obj.to; b.title = obj.reason; turn.querySelector('.badges').append(b); }
+      if (ev === 'reply') { b.className = 'badge agent'; b.textContent = obj.agent; turn.querySelector('.badges').append(b);
+        turn.querySelector('pre').textContent = obj.answer + (Object.keys(obj.data || {}).length ? '\n\n' + JSON.stringify(obj.data, null, 2) : ''); }
+    }
+  }
+});
+</script>
+</body>
+</html>
