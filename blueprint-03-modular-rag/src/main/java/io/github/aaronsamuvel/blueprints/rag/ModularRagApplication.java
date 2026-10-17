@@ -9,6 +9,7 @@ import io.github.aaronsamuvel.blueprints.rag.routing.KeywordQueryRouter;
 import io.github.aaronsamuvel.blueprints.rag.routing.QueryRouter;
 import io.github.aaronsamuvel.blueprints.shared.StubEmbeddingModel;
 import io.github.aaronsamuvel.blueprints.shared.StubModelConfiguration;
+import io.github.aaronsamuvel.blueprints.shared.env.AiEnvironmentConfiguration;
 
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.embedding.EmbeddingModel;
@@ -27,7 +28,7 @@ import org.springframework.context.annotation.Import;
  * For pgvector + Ollama, provide your own EmbeddingModel/VectorStore beans (see PgVectorRagIT).
  */
 @SpringBootApplication
-@Import(StubModelConfiguration.class)
+@Import({StubModelConfiguration.class, AiEnvironmentConfiguration.class})
 public class ModularRagApplication {
 
     public static void main(String[] args) {
