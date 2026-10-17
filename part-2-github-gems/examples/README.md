@@ -11,7 +11,7 @@ Part II: 10 handbook entries, 15 repositories (licences as reported by GitHub on
 
 | # | Repository | Licence | Reuse | Compare with |
 |---|---|---|---|---|
-| 1 | [embabel/embabel-agent](https://github.com/embabel/embabel-agent) | Apache-2.0 | copy allowed with attribution and the licence notice | `blueprint-01-goap-finops-incident-agent` |
+| 1a | [embabel/embabel-agent](https://github.com/embabel/embabel-agent) | Apache-2.0 | copy allowed with attribution and the licence notice | `blueprint-01-goap-finops-incident-agent` |
 ...
 | 8 | [iunera/ypipe](https://github.com/iunera/ypipe) | none | no licence detected: study only, do not copy code | `blueprint-06-mcp-mesh-model-switchboard` |
 ```
