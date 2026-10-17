@@ -25,7 +25,7 @@ class LifecycleExamplesTest {
         assertThat(t.severity()).isEqualTo(IncidentTriage.Severity.CRITICAL);
         assertThat(t.nextSteps()).containsExactly("page on-call");
         // the format instructions for the record schema were appended to the prompt
-        assertThat(model.allSentText()).contains("severity");
+        assertThat(model.allSentText()).contains("severity").contains("Name of the affected service");
     }
 
     @Test

@@ -12,6 +12,8 @@ framework matrix. The code is small and runs offline. Each example backs up one 
 | `examples/StructuredOutputExample.java` | `ChatClient…entity(IncidentTriage.class)` | Stage 1 |
 | `examples/AuditTrailAdvisor.java` | minimal `CallAdvisor` around every model call | Pillar 3 |
 | `examples/VirtualThreadFanOut.java` | parallel blocking calls on virtual threads | Pillar 1, Stage 7 |
+| `observability/ObservedChatClients.java` | `ChatClient` wired to a Micrometer `ObservationRegistry` | Stage 6 |
+| `observability/OpenInferenceObservationFilter.java` | adds `openinference.span.kind` (CHAIN, LLM, TOOL, RETRIEVER) to Spring AI observations | Stage 6 |
 | `LifecycleDemoApplication.java` | ties them together with the stub model | — |
 | [exercises.md](exercises.md) | practice tasks | — |
 
@@ -19,7 +21,7 @@ Code: `src/main/java/io/github/aaronsamuvel/blueprints/lifecycle/examples/`. See
 
 ## Run
 ```bash
-mvn -B -pl part-1-lifecycle -am verify     # 4 tests, offline
+mvn -B -pl part-1-lifecycle -am verify     # 6 tests, offline
 # command-line demo (stub model, no server, no port)
 mvn -B -pl part-1-lifecycle -am spring-boot:run
 # or package and run the jar
@@ -32,3 +34,14 @@ IncidentTriage[severity=HIGH, service=checkout, summary=p95 latency over 2s, nex
 [AuditEntry[promptChars=77, responseChars=110, millis=4]]
 ```
 (`millis` varies.)
+
+## Observability (Stage 6)
+`ObservabilityTest` checks that one call through a `ChatClient` with a custom advisor emits a
+`spring.ai.chat.client` observation and a `spring.ai.advisor` observation named `AuditTrailAdvisor`,
+both tagged `openinference.span.kind=CHAIN`. The model, tool and vector-store names map to LLM, TOOL
+and RETRIEVER.
+
+To export the spans to the `otel-lgtm` service in `compose.yaml`, add Spring Boot's OpenTelemetry
+starter and set `management.opentelemetry.tracing.export.otlp.endpoint=http://localhost:4318/v1/traces`.
+That export path is **not run here** (no Docker on the build box), so Stage 6 is Partial in the
+[traceability matrix](../docs/pdf-requirements-mapping.md).
