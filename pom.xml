@@ -13,7 +13,7 @@
 
   <modules>
     <module>shared</module>
-
+    <module>part-1-lifecycle</module>
 
     
     
