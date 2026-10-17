@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.github.aaron-samuvel</groupId>
+    <artifactId>java-ai-blueprints</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>part-2-github-gems</artifactId>
+  <name>part-2-github-gems</name>
+  <description>Part II catalogue as data: the handbook's GitHub repositories, their licences and the blueprint each maps to.</description>
+  <properties>
+    <spring-boot.run.skip>false</spring-boot.run.skip>
+  </properties>
+  <dependencies>
+    <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-test</artifactId><scope>test</scope></dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <!-- runnable report: java -jar target/part-2-github-gems-0.1.0-SNAPSHOT.jar -->
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration><mainClass>io.github.aaronsamuvel.blueprints.gems.GemsReport</mainClass></configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <!-- live check against the public GitHub API: mvn -Pit verify -pl part-2-github-gems -->
+    <profile>
+      <id>it</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <version>3.6.1</version>
+            <executions>
+              <execution>
+                <id>add-it-sources</id>
+                <phase>generate-test-sources</phase>
+                <goals><goal>add-test-source</goal></goals>
+                <configuration><sources><source>src/it/java</source></sources></configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
